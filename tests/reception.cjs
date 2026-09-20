@@ -3,8 +3,10 @@ const Game=require('../engine.js'),D=require('../data.js'),S=require('../scene.j
 test('recepção limita presença habitual e atribui postos únicos ao plantão',()=>{
  let g=new Game();for(let day=0;day<7;day++)for(let minute=480;minute<1080;minute+=5){
   g.s.time=day*1440+minute;
-  const present=D.npcs.filter(n=>g.location(n)===1);assert(present.length<=4);
-  const staff=present.filter(n=>n.id!==g.receptionRoster().visitor).map(n=>g.npcView(n));
+  const present=D.npcs.filter(n=>g.location(n)===1);
+  // O quadro rotativo da recepção nunca passa de 4; visitas nomeadas de outros andares (ex.: Eva/Artur no almoço) não contam nessa cota.
+  const residents=present.filter(n=>n.floor===1);assert(residents.length<=4);
+  const staff=residents.filter(n=>n.id!==g.receptionRoster().visitor).map(n=>g.npcView(n));
   assert.equal(new Set(staff.map(n=>n.slot)).size,staff.length);
   for(const n of staff)assert(!S.blocked(S.home(n).x,S.home(n).y,1));
  }

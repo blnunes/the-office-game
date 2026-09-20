@@ -76,7 +76,8 @@ for(const l of layouts)for(const o of l.objects){const size=propSizes[o.type];if
  const cx=o.x+o.w/2,bottom=o.y+o.h;[o.w,o.h]=size;o.x=cx-o.w/2;o.y=bottom-o.h;
 }
 const influenceAccess=[0,0,12,24,40,60,85];
-const visits={1:[{from:600,to:660,floor:3,reason:'Levando demandas de operações'}],14:[{from:840,to:900,floor:4,reason:'Mentoria a convite da liderança'}],15:[{from:900,to:945,floor:3,reason:'Articulando a próxima vaga'}],31:[{from:900,to:945,floor:3,reason:'Reunião informal com Caio'}],53:[{from:900,to:960,floor:6,reason:'Negociando apoio executivo'}]};
+// Visitas entre andares são poucas e nomeadas de propósito — cada uma é uma rotina fixa de uma pessoa específica, não um fluxo genérico de "todo mundo do andar X visita o andar Y".
+const visits={1:[{from:600,to:660,floor:3,reason:'Levando demandas de operações'}],14:[{from:840,to:900,floor:4,reason:'Mentoria a convite da liderança'}],15:[{from:900,to:945,floor:3,reason:'Articulando a próxima vaga'}],31:[{from:900,to:945,floor:3,reason:'Reunião informal com Caio'}],53:[{from:900,to:960,floor:6,reason:'Negociando apoio executivo'}],61:[{from:720,to:810,floor:1,reason:'Visitando a recepção no almoço'}],67:[{from:720,to:810,floor:1,reason:'Conferindo o andar térreo pessoalmente'}]};
 const workload={bug:12,review:5,feature:20,incident:24,mentor:7,strategy:18};
 const config={layouts,influenceAccess,visits,workload,taskScenes,balance,roles,floors,counts,npcs,tasks,normal:{reward:1,relation:1,minDays:2},demo:{reward:3,relation:2,minDays:0},requirements:[{d:5,p:6,s:1,r:12},{d:12,p:14,s:2,r:14},{d:22,p:25,s:2,r:16},{d:34,p:38,s:3,r:18},{d:48,p:54,s:3,r:20},{d:64,p:72,s:4,r:22},{d:82,p:92,s:4,r:24}]}; root.DATA=config;if(typeof module!=='undefined')module.exports=config;
 })(typeof window!=='undefined'?window:globalThis);
