@@ -170,9 +170,10 @@ function chairSeats(o){
  const cx=o.x+o.w/2,cy=o.y+o.h/2,r=o.w*.55;
  return [{x:cx-r,y:cy+3},{x:cx+r,y:cy+3},{x:cx,y:cy-r*.72}];
 }
+// Tons por tipo de posto: madeira do corpo e do tampo.
+const DESK_TONES={desk:['#b48a5f','#ddbd8c'],executive:['#8a6748','#c39a6c'],console:['#54707c','#8fb0b8']};
 function deskUnit(c,o){
- const{x,y,w,h,type}=o,wood=type==='executive'?'#8a6748':type==='console'?'#54707c':'#b48a5f';
- const top=type==='executive'?'#c39a6c':type==='console'?'#8fb0b8':'#ddbd8c';
+ const{x,y,w,h,type}=o,[wood,top]=DESK_TONES[type]||DESK_TONES.desk;
  round(c,x+6,y+10,w,h-6,8,'#1c2e3020');
  slab(c,x,y,w,h,top,wood);legs(c,x,y,w,h,shade(wood,-26));
  // Gaveteiro encostado a um dos lados, para a secretária ter volume e não ser uma tábua solta.
@@ -342,12 +343,12 @@ const PIECES={desk:deskUnit,executive:deskUnit,console:deskUnit,reception:recept
  cabinet:cabinetUnit,printer:printerUnit,plant:(c,o)=>plant(c,o.x+o.w/2,o.y+o.h-4),
  sofa:SOFA,coffee:coffeeMachine,rack:rackUnit,board:boardUnit,garden:gardenUnit};
 // Tipos com cadeira no lugar dado por chairSpot(), e tipos que levam sombra projetada.
-const COM_CADEIRA=['desk','executive','console','reception'];
-const COM_SOMBRA=['sofa','coffee','rack','board','garden','meeting','boardtable'];
+const COM_CADEIRA=new Set(['desk','executive','console','reception']);
+const COM_SOMBRA=new Set(['sofa','coffee','rack','board','garden','meeting','boardtable']);
 // Balcão e mesinhas dizem o que são pelo próprio desenho; o resto do cenário não se anuncia.
-const SEM_LEGENDA=[...QUIET,'reception','cafetable','armchair'];
+const SEM_LEGENDA=new Set([...QUIET,'reception','cafetable','armchair']);
 function pieceLabel(c,o,f){
- if(SEM_LEGENDA.includes(o.type))return;
+ if(SEM_LEGENDA.has(o.type))return;
  const cx=o.x+o.w/2;
  // Nas secretárias a legenda desce para baixo da cadeira; se cair noutro móvel, sobe.
  let ly=o.y+o.h+(['desk','executive','console'].includes(o.type)?52:17);
@@ -360,9 +361,9 @@ function pieceLabel(c,o,f){
 function furniture(c,o,f){const{x,y,w,h,type}=o;
  // Café, mural e plantas continuam a vir de office-props.png quando a imagem já carregou.
  if(['coffee','board','plant'].includes(type)&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){pieceLabel(c,o,f);return}
- if(COM_SOMBRA.includes(type))round(c,x+5,y+9,w,h,8,'#223c3d20');
+ if(COM_SOMBRA.has(type))round(c,x+5,y+9,w,h,8,'#223c3d20');
  (PIECES[type]||roundTable)(c,o);
- if(COM_CADEIRA.includes(type)){const cs=chairSpot(o);officeChair(c,cs.x,cs.y)}
+ if(COM_CADEIRA.has(type)){const cs=chairSpot(o);officeChair(c,cs.x,cs.y)}
  if(type==='reception')plant(c,x+w+16,y+h-8);
  pieceLabel(c,o,f);
 }
@@ -391,7 +392,7 @@ c.save();c.translate(x,y+bob);ellipse(c,0,10,12,3.5,'#20363d30');
 if(selected){c.strokeStyle='#f7d687';c.lineWidth=1.5;c.beginPath();c.ellipse(0,10,15,5,0,0,Math.PI*2);c.stroke()}
 // Pernas curtas: o resto do corpo fica escondido pela cadeira/mesa, como se estivesse mesmo sentado.
 round(c,-7,1,6,8,2,'#39495a');round(c,1,1,6,8,2,'#39495a');round(c,-8,7,8,4,2,'#233341');round(c,0,7,8,4,2,'#233341');
-const bw=side?14:vertical?16:20,bx=side?-7:vertical?-8:-10;
+const [bw,bx]=side?[14,-7]:vertical?[16,-8]:[20,-10];
 round(c,bx,-15,bw,16,5,a.shirt);round(c,bx+1,-15,bw-2,4,2,collar);
 if(!side&&dir!=='up'){line(c,[[-3,-15],[0,-11],[3,-15]],shade(a.shirt,-30),1.4);round(c,3.5,-9,3.5,4.5,1,'#e9e2c6');ellipse(c,5.2,-7,.8,.8,'#7f8f93')}
 round(c,side?-3:-9,-9+armL,5,10,3,sleeve);ellipse(c,side?0:-10.5,-1+armL,2.6,3,a.skin);
