@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>Sprites · quatro direções</title>
+<style>body{background:#d4ddc7;font:18px system-ui;padding:24px}canvas{width:800px;height:560px}button{padding:12px}</style>
+<h1>Caminhada em quatro direções</h1><p>Baixo · esquerda · direita · cima. Quadros desenhados; cores por personagem.</p>
+<button onclick="paused=!paused">Pausar / animar</button><br><canvas width="800" height="560"></canvas>
+<script src="../spritesheet.js?v=identity-20260913"></script><script>
+let paused=false,d=0;const c=document.querySelector('canvas').getContext('2d');
+function paint(){c.clearRect(0,0,800,560);if(!paused)d+=.65;
+['down','left','right','up'].forEach((dir,r)=>{c.fillStyle='#314c4a';c.fillText(dir,10,r*130+60);for(let i=0;i<4;i++){c.save();c.translate(140+i*175,r*130+85);c.scale(1.7,1.7);WALK_SHEET.draw(c,0,0,[{gender:'feminino',skin:'#efab78',hair:'#654334',shirt:'#ee8070'},{style:2,skin:'#875439',hair:'#302c29',shirt:'#608fbc'},{gender:'feminino',skin:'#e2b48b',hair:'#b9924d',shirt:'#6e9c82'},{skin:'#c38d65',hair:'#493c37',shirt:'#edc457'}][i],dir,d,i!==3,false);c.restore();}});requestAnimationFrame(paint)}paint();
+</script>

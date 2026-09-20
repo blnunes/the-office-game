@@ -1,0 +1,2 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),Game=require('../engine.js'),S=require('../scene.js');
+test('NPC preso em rota horizontal tenta um desvio vertical',()=>{let g=new Game();g.s.time=600;let w=new S.World();w.update(g,0);let p=[...w.people.values()][0];p.x=120;p.y=300;p.destination={x:840,y:300};p.route=[{x:140,y:300}];p.requestKey='forced';let before=p.y;for(let i=0;i<80;i++)w.update(g,.05);assert(p.blockedFor===undefined||p.blockedFor<.7);assert(Math.abs(p.y-before)>0||p.route.length===0);});

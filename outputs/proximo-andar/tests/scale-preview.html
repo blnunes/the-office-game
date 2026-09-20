@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><title>Escala dos andares</title>
+<style>body{background:#182e33;color:#eee;font:16px system-ui}section{display:inline-block}canvas{width:600px;height:375px}</style>
+<h1>Mesma escala · recepção e desenvolvimento</h1><section><h2>Primeiro andar</h2><canvas width="960" height="600"></canvas></section><section><h2>Segundo andar</h2><canvas width="960" height="600"></canvas></section>
+<script src="../data.js"></script><script src="../spritesheet.js"></script><script src="../office-art.js"></script><script src="../scene.js"></script>
+<script>function draw(){document.querySelectorAll('canvas').forEach((v,i)=>{const c=v.getContext('2d');SCENE.background(c,i+1,600);for(const o of DATA.layouts[i].objects.filter(o=>o.type==='desk'))SCENE.sprite(c,o.x+o.w/2,o.y+o.h+24,{skin:'#efab78',hair:'#654334',shirt:'#edc457'},'up',0,false,false);});requestAnimationFrame(draw)}draw();</script>
