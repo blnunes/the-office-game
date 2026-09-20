@@ -8,7 +8,7 @@ const normalize=name=>name.normalize('NFD').replace(/\p{Diacritic}/gu,'').trim()
 test('exatamente 70 NPCs e distribuição prevista nos sete andares',()=>{
  assert.equal(D.npcs.length,70);
  assert.deepEqual(Array.from({length:7},(_,f)=>D.npcs.filter(n=>n.floor===f+1).length),[16,14,12,10,8,6,4]);
- assert.equal(D.npcs.filter(n=>n.central).length,14);
+ assert.equal(D.npcs.filter(n=>n.central).length,17);
 });
 test('IDs únicos, estáveis e compatíveis com os índices do save',()=>{
  assert.equal(new Set(D.npcs.map(n=>n.id)).size,70);
