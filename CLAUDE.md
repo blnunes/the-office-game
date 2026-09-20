@@ -30,8 +30,6 @@ Jogo na raiz do repositório (scripts clássicos, ordem de carga em `index.html`
 
 ATENÇÃO: os `.js` têm poucas linhas mas muito comprimento (código denso). Não leia ficheiros inteiros: use `grep -o`, `grep -n` com padrões curtos, ou `python3` para extrair/editar por leitura-modificação-escrita. Nunca reescreva um ficheiro a partir de saída truncada.
 
-`work/` na raiz contém scripts Python antigos do Codex que geraram/remendaram os `.js` por substituição de texto. São histórico. Não voltar a executá-los (a base já contém o resultado). Editar os `.js` diretamente.
-
 ## Comandos
 
 Node só é necessário para os testes (não para jogar). A partir da raiz do repositório:
@@ -43,7 +41,7 @@ node --test tests/story-routines.cjs   # exemplo de teste isolado
 
 Correr o jogo: `python3 launcher.py` (ou duplo clique em `Abrir.command`), abrir http://127.0.0.1:8765/. Alternativa: abrir `index.html` (o save fica separado por método de abertura).
 
-Recriar a entrega compactada, depois de alterações (lista explícita: raiz já tem `CLAUDE.md`/`RETOMADA*.md`/`work/`, que não fazem parte do jogo):
+Recriar a entrega compactada, depois de alterações (lista explícita: raiz já tem `CLAUDE.md`/`RETOMADA*.md`, que não fazem parte do jogo):
 
 ```sh
 zip -qr outputs/Proximo-Andar.zip Abrir.command LEIA-ME.md REVISAO-CARREIRAS.md \

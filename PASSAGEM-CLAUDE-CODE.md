@@ -27,6 +27,7 @@ Lê CLAUDE.md, RETOMADA.md e PASSAGEM-CLAUDE-CODE.md. Estamos a continuar uma mi
 - Estrutura achatada (20/09, sessão Claude Code): jogo movido de `outputs/proximo-andar/` para a raiz do repo com `git mv` (histórico preservado). `outputs/` agora só guarda `Proximo-Andar.zip`. `CLAUDE.md` e `RETOMADA.md` atualizados com os novos caminhos e o novo comando de zip.
 - Repositório remoto criado e ligado: `github.com/blnunes/the-office-game` (público), `git remote add origin` feito. Falta só o primeiro `git push -u origin main`, que o utilizador faz no Terminal do Mac (credenciais dele).
 - Canal Slack `#the-office-game` criado (público) para receber o resumo de fim de sessão.
+- `work/` (16 scripts Python antigos do Codex que remendavam os `.js` por substituição de texto, já todos aplicados e com caminhos desatualizados após o achatamento) apagado a pedido do utilizador.
 
 ## Pendências e decisões em aberto
 
@@ -35,7 +36,7 @@ Lê CLAUDE.md, RETOMADA.md e PASSAGEM-CLAUDE-CODE.md. Estamos a continuar uma mi
 3. Plano de testes: a skill `engineering:testing-strategy` foi chamada mas ainda não produziu nada. O projeto-alvo é o Próximo Andar (testes em `tests/*.cjs`; ver a secção Testes do `CLAUDE.md`). Boa primeira tarefa depois do diagnóstico.
 4. `LEIA-ME.md` ainda descreve a revisão 0.3/0.4; recriar `outputs/Proximo-Andar.zip` depois de alterações (novo comando no `CLAUDE.md`).
 5. Pendências do jogo: ver `RETOMADA.md` (colisão/gargalos, migração de saves, arte, histórias para mais NPCs).
-6. `work/` (scripts Python antigos do Codex, na raiz) e `outputs/Proximo-Andar.zip` ainda não foram revistos — ficaram fora do pedido de achatamento desta sessão.
+6. `outputs/Proximo-Andar.zip` (desatualizado, de 13/09) ainda não foi revisto. `work/` (scripts Python antigos do Codex) foi removido nesta sessão — já não é usado desde a otimização/migração para o Claude.
 
 ## Configuração no Claude Code (uma vez)
 
