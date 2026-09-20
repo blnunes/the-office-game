@@ -57,13 +57,16 @@ const balance={workdayStart:480,workdayEnd:1080,taskDailyLimit:2,forcedRestHours
 const layouts=[
  {name:'Recepção & convivência',theme:'#cbd4bd',feature:'Atendimento, suporte e encontros',objects:[['reception',90,245,260,64,'Atendimento & recepção'],['board',50,118,110,100,'Mural da empresa'],['partition',44,352,266,10,'Divisória da espera'],['partition',300,352,10,150,'Divisória da espera'],['sofa',88,376,190,44,'Espera de visitantes'],['lowtable',126,438,96,42,'Mesa de revistas'],['armchair',246,434,50,48,'Poltrona da espera'],['plant',42,438,48,62,'Jardim da recepção'],['counter',636,120,168,34,'Copa da equipe'],['coffee',816,110,110,110,'Café & conversa'],['cafetable',644,196,72,72,'Mesa do café'],['cafetable',788,268,72,72,'Mesa do café'],['printer',434,396,52,58,'Impressora & arquivo'],['desk',520,393,96,86,'Operações'],['desk',700,393,96,86,'Suporte de plantão'],['cabinet',858,392,54,92,'Arquivo da recepção']],seats:[[218,228],[568,500],[748,500],[690,300],[834,360],[160,520],[264,520],[430,300],[480,340],[560,180],[620,520],[880,300],[380,520],[840,540]]},
  // Quatro repartições lado a lado (não só desenvolvimento): cada uma com mesas e mural próprios, separadas por divisórias baixas em background().
+ // Mesas/mural/café menores que o padrão do prédio (ver propSizes2) — com 14 pessoas neste andar, corredores largos importam mais que móveis grandes.
  {name:'Desenvolvimento & operações',theme:'#c5d3cc',feature:'Squads, RH, marketing e pessoal no mesmo andar',objects:[
-  ['desk',55,245,96,86,'Estação de desenvolvimento'],['desk',195,245,96,86,'Estação de desenvolvimento'],['desk',55,400,96,86,'Estação de desenvolvimento'],['desk',195,400,96,86,'Estação de desenvolvimento'],['board',50,125,90,84,'Quadro da sprint'],
-  ['desk',370,245,96,86,'Recursos Humanos'],['desk',370,400,96,86,'Recursos Humanos'],['board',340,125,90,84,'Quadro de vagas'],
-  ['desk',575,245,96,86,'Marketing & Comunicação'],['desk',575,400,96,86,'Marketing & Comunicação'],['board',545,125,90,84,'Mural de campanhas'],
-  ['desk',780,245,96,86,'Departamento pessoal'],['desk',780,400,96,86,'Departamento pessoal'],['board',750,125,90,84,'Quadro de ponto'],
-  ['coffee',225,135,64,68,'Café'],['plant',305,175,32,35,'Planta'],['plant',510,175,32,35,'Planta'],['plant',715,175,32,35,'Planta']
- ],seats:[[103,349],[243,349],[418,349],[623,349],[828,349],[103,504],[243,504],[170,150],[418,504],[460,150],[623,504],[660,150],[828,504],[870,150]]},
+  ['desk',50,225,72,64,'Estação de desenvolvimento'],['desk',190,225,72,64,'Estação de desenvolvimento'],['desk',50,360,72,64,'Estação de desenvolvimento'],['desk',190,360,72,64,'Estação de desenvolvimento'],['board',45,125,64,56,'Quadro da sprint'],
+  ['desk',390,225,72,64,'Recursos Humanos'],['desk',390,360,72,64,'Recursos Humanos'],['board',345,125,64,56,'Quadro de vagas'],
+  ['desk',590,225,72,64,'Marketing & Comunicação'],['desk',590,360,72,64,'Marketing & Comunicação'],['board',550,125,64,56,'Mural de campanhas'],
+  ['desk',800,225,72,64,'Departamento pessoal'],['desk',800,360,72,64,'Departamento pessoal'],['board',755,125,64,56,'Quadro de ponto'],
+  // Copa central: café + mesinha, no corredor de baixo, à mesma distância das quatro repartições — não escondida num canto de uma delas.
+  ['coffee',400,480,48,50,'Café'],['cafetable',505,470,64,64,'Mesa do café'],
+  ['plant',305,175,32,35,'Planta'],['plant',510,175,32,35,'Planta'],['plant',715,175,32,35,'Planta']
+ ],seats:[[86,307],[226,307],[426,307],[626,307],[836,307],[86,442],[226,442],[150,150],[426,442],[430,150],[626,442],[630,150],[836,442],[840,150]]},
  {name:'Plataforma & observabilidade',theme:'#b4c9d4',feature:'Serviços que não dormem',objects:[['rack',85,190,60,120,'Servidores'],['rack',170,190,60,120,'Servidores'],['rack',255,190,60,120,'Servidores'],['console',570,205,300,70,'Central de incidentes'],['desk',610,370,130,55,'Confiabilidade'],['board',90,415,230,32,'Mapa de serviços'],['coffee',800,445,80,45,'Café']],seats:[[670,185],[665,345],[100,350],[210,350],[300,350],[390,210],[810,330],[870,385],[340,480],[520,480],[660,480],[780,525]]},
  {name:'Liderança & planejamento',theme:'#d3c8b8',feature:'Decidir juntos',objects:[['meeting',100,220,270,105,'Reunião de equipe'],['board',610,170,240,38,'Planejamento'],['desk',650,280,165,62,'Coordenação'],['sofa',120,420,200,50,'Mentoria'],['coffee',760,440,110,50,'Café']],seats:[[690,260],[190,198],[110,360],[280,360],[370,350],[580,340],[855,290],[635,440],[320,505],[740,525]]},
  {name:'Diretoria & decisões',theme:'#d6cbbb',feature:'Prioridades com consequências',objects:[['executive',95,240,250,76,'Direção de engenharia'],['executive',625,240,240,76,'Direção de plataforma'],['meeting',350,390,260,90,'Comitê técnico'],['board',75,140,220,35,'Portfólio'],['coffee',795,440,90,45,'Café']],seats:[[225,215],[750,215],[130,365],[310,350],[650,350],[810,360],[295,465],[675,460]]},
@@ -72,7 +75,9 @@ const layouts=[
 ].map((l,i)=>({...l,floor:i+1,objects:l.objects.map((o,k)=>({id:k,type:o[0],x:o[1],y:o[2],w:o[3],h:o[4],label:o[5]}))}));
 // World units: a character is 52px tall. Shared props use one physical size on every floor.
 const propSizes={desk:[96,86],board:[90,84],coffee:[64,68],plant:[32,35]};
-for(const l of layouts)for(const o of l.objects){const size=propSizes[o.type];if(!size)continue;
+// Andar 2 tem 14 pessoas para só 10 secretárias reais: móveis um pouco menores liberam corredor sem esvaziar o andar.
+const propSizes2={desk:[72,64],board:[64,56],coffee:[48,50],plant:[32,35]};
+for(const l of layouts)for(const o of l.objects){const size=(l.floor===2?propSizes2:propSizes)[o.type];if(!size)continue;
  const cx=o.x+o.w/2,bottom=o.y+o.h;[o.w,o.h]=size;o.x=cx-o.w/2;o.y=bottom-o.h;
 }
 const influenceAccess=[0,0,12,24,40,60,85];
