@@ -45,6 +45,17 @@ Pedido do utilizador: piso 1 (receção) como zona administrativa de baixo escal
 - Ainda por fazer, alinhado com "repensar a empresa toda" (pedido do utilizador, mas fora do alcance desta iteração): o resto da Nimbus continua com cargos e minijogos 100% de tecnologia (`roles` em `data.js`: Pleno→Sénior→Tech Lead→...→CEO; minijogos: bug/revisão/funcionalidade/incidente/mentoria/estratégia). Reescrever isso para refletir uma empresa administrativa/de papel é um trabalho maior, andar a andar, com o mesmo cuidado de não mexer em `id`.
 - Testes atualizados: `npc-integrity.cjs` e `campaign.cjs` esperavam 14 centrais, agora 17. 50 testes continuam a passar.
 
+## Polimento do andar 1 (20/09, sessão Claude Code)
+
+Pedido do utilizador: os bonecos ficavam de pé encostados às secretárias em vez de parecer sentados a trabalhar, a mesa da receção não convencia, a sala de espera era "um quadrado sem significado" e a planta da receção disparava uma ação sem sentido.
+
+- **Pose sentada:** `scene.js` ganhou `spriteSeated()` — encosto de cadeira largo com rodízios, pernas curtas escondidas atrás do assento. `app.js` (`draw()`) calcula `seated = !moving && arrived && !coffee && !partner` para cada pessoa (não o jogador) e passa isso a `SCENE.sprite(...)`. Como a folha de sprites PNG (`WALK_SHEET`) não tem pose sentada, o despachante em `scene.js` ignora-a e força o desenho procedural quando `seated` é verdadeiro. Efeito é global (todos os andares), não só o andar 1.
+- **Balcão de receção redesenhado:** `furniture()` deixou de tratar `reception` como uma secretária normal com autocolante — agora tem fachada alta virada para quem chega, letreiro "NIMBUS · RECEPÇÃO", tampo mais baixo do lado da Lia e uma planta ao lado.
+- **Sala de espera com divisória:** `background()` desenha agora duas paredes baixas (estilo divisória de escritório, cor diferente da parede principal) a fechar o sofá "Espera de visitantes" num recanto, com uma planta no canto interior — deixa de ser um retângulo solto no meio do chão.
+- **Planta da receção corrigida:** `furniture()` não tinha um caso para `type==='plant'` — caía no desenho genérico de "mesa redonda". Agora usa o helper `plant()` (já existia, nunca tinha sido ligado a este tipo). Além disso, `near()` em `app.js` deixou de contar objetos `plant`/`garden` como interativos — deixaram de abrir a tarefa genérica "Organizar a recepção" (essa ação ficou só no quadro/mural, que faz mais sentido).
+- Lembrete: subir a versão do `?v=` em `index.html`/`tests/visual.html` sempre que se altera `.js` (feito: `v=20260920c`), senão o navegador mostra a versão em cache.
+- Por conferir num navegador a sério (não só `tests/visual.html`): como fica a pose sentada nos outros 6 andares, sobretudo mesas em fila (andar 2) e mesas executivas (andares 4-5).
+
 ## Próximas melhorias (prioridade do Codex, ainda abertas)
 
 - Observar no navegador: NPC com `!` a aproximar-se, dois NPCs no café, grupo grande no andar executivo.
