@@ -101,13 +101,15 @@ function text(c,t,x,y,size=12,color='#324b4e'){c.font='600 '+size+'px system-ui'
 function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)+amt,g=(n>>8&255)+amt,b=(n&255)+amt;r=r<0?0:r>255?255:r;g=g<0?0:g>255?255:g;b=b<0?0:b>255?255:b;return '#'+(1<<24|r<<16|g<<8|b).toString(16).slice(1)}
 // Relógio de parede real (segundos), para animações de ambiente que não dependem do relógio do jogo (que só avança a cada minuto).
 function now(){return(typeof performance!=='undefined'?performance.now():Date.now())/1000}
+// Ponto exato da cadeira por objeto: usado tanto para desenhar a cadeira como para posicionar quem está sentado nela — nunca dessincronizados.
+function chairSpot(o){const{x,y,w,h,type}=o;if(type==='reception')return{x:x+128,y:y-7};if(['desk','executive','console'].includes(type))return{x:x+w*.5,y:y+h+18};return null}
 // Chão em pranchas: tons alternados + juntas em pixel duro (sem gradiente/blur), no espírito de um RPG 2D top-down.
 function floor(c,l){const base=l.theme,light=shade(base,20),seam=shade(base,-38),dark=shade(base,-20),tile=40;round(c,0,108,960,492,0,base);
  for(let y=108,ry=0;y<600;y+=tile,ry++){for(let x=0,rx=0;x<960;x+=tile,rx++){if((rx+ry)%2)c.fillStyle=light,c.fillRect(x,y,tile,tile);}}
  c.fillStyle=seam;c.globalAlpha=.55;for(let y=108;y<=600;y+=tile)c.fillRect(0,y,960,1);for(let x=0;x<=960;x+=tile)c.fillRect(x,108,1,492);c.globalAlpha=1;
  for(let i=0;i<22;i++){const kx=20+(i*151)%940,ky=128+(i*113)%452;c.fillStyle=dark;c.globalAlpha=.28;c.beginPath();c.ellipse(kx,ky,2.4,3,0,0,Math.PI*2);c.fill();}c.globalAlpha=1;}
 function plant(c,x,y){if(root.OFFICE_ART?.draw(c,'plant',x-16,y-17,32,35))return;round(c,x-10,y,20,18,4,'#ba866a');line(c,[[x,y],[x,y-25]],'#527155',3);ellipse(c,x-9,y-15,11,6,'#6c9470');ellipse(c,x+8,y-24,11,7,'#8aac7d');ellipse(c,x-3,y-32,7,10,'#648866')}
-function furniture(c,o,f){let {x,y,w,h,type}=o;if(root.OFFICE_ART?.draw(c,type,x,y,w,h)){text(c,o.label,x+w/2,y+h+17,11);return;}round(c,x+5,y+9,w,h,8,'#223c3d20');if(['desk','executive','console'].includes(type)){round(c,x,y,w,h,7,type==='console'?'#5e8290':type==='executive'?'#967458':'#c69f72');round(c,x+3,y+3,w-6,h-11,5,type==='executive'?'#bd976d':'#e2c597');round(c,x+w*.4,y+10,w*.26,24,3,'#314c5d');round(c,x+w*.4+3,y+13,w*.26-6,15,2,'#80acb5');line(c,[[x+w*.45,y+18],[x+w*.58,y+18]],'#d6edd0');round(c,x+w*.4,y+38,w*.27,8,2,'#f1e6cb');round(c,x+w-23,y+14,10,12,3,'#f7ead2');if(type==='executive'){round(c,x+16,y+17,24,22,3,'#647f79');line(c,[[x+22,y+23],[x+33,y+23]],'#dfd5b7')}}else if(type==='reception'){
+function furniture(c,o,f){let {x,y,w,h,type}=o;if(type!=='desk'&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){text(c,o.label,x+w/2,y+h+17,11);return;}round(c,x+5,y+9,w,h,8,'#223c3d20');if(['desk','executive','console'].includes(type)){round(c,x,y,w,h,7,type==='console'?'#5e8290':type==='executive'?'#967458':'#c69f72');round(c,x+3,y+3,w-6,h-11,5,type==='executive'?'#bd976d':'#e2c597');round(c,x+w*.4,y+10,w*.26,24,3,'#314c5d');round(c,x+w*.4+3,y+13,w*.26-6,15,2,'#80acb5');line(c,[[x+w*.45,y+18],[x+w*.58,y+18]],'#d6edd0');round(c,x+w*.4,y+38,w*.27,8,2,'#f1e6cb');round(c,x+w-23,y+14,10,12,3,'#f7ead2');if(type==='executive'){round(c,x+16,y+17,24,22,3,'#647f79');line(c,[[x+22,y+23],[x+33,y+23]],'#dfd5b7')}}else if(type==='reception'){
 // Balcão de receção: fachada alta virada para quem chega, tampo de trabalho mais baixo do lado da Lia.
 round(c,x,y,w,h-24,6,'#c69f72');round(c,x+3,y+3,w-6,h-30,4,'#e2c597');
 round(c,x,y+h-24,w,24,6,'#63877e');round(c,x+4,y+h-21,w-8,7,3,'#7fa199');
@@ -126,9 +128,11 @@ line(c,[[x+12,y+14+i*25],[x+30,y+14+i*25]],'#2e4857',2)}}else if(type==='board')
 let sx=x+w*.4,sw=w*.26;round(c,sx-3,y+6,sw+6,29,3,'#233845');round(c,sx,y+9,sw,21,1,'#253f50');round(c,sx+sw/2-2,y+34,4,5,1,'#657b80');round(c,sx+sw/2-8,y+38,16,2,1,'#60787b');
 for(let i=0;i<4;i++)line(c,[[sx+4,y+13+i*4],[sx+7+(i%3)*sw/6,y+13+i*4]],['#80b9a2','#d3b777','#8daabe','#bd939d'][i],1.5);
 round(c,sx-1,y+42,sw+4,9,2,'#d7d6be');for(let row=0;row<2;row++)for(let col=0;col<6;col++)round(c,sx+2+col*(sw-3)/6,y+44+row*3,2,1,0,'#8b9990');ellipse(c,sx+sw+12,y+44,4,6,'#d8d7c4');line(c,[[sx+sw+12,y+37],[sx+sw+14,y+31]],'#596d6966',.8);
-round(c,x+10,y+15,Math.min(21,w*.15),25,2,'#5c7771');round(c,x+12,y+14,Math.min(17,w*.12),22,1,'#efe7cb');for(let i=0;i<4;i++)line(c,[[x+15,y+18+i*4],[x+24,y+18+i*4]],'#9caa9a',.8);line(c,[[x+29,y+16],[x+32,y+33]],'#ad6652',2);
 if(w>180){round(c,x+w-53,y+12,21,27,3,'#9a674f');ellipse(c,x+w-42,y+16,8,3,'#486550');ellipse(c,x+w-46,y+10,5,8,'#689676');ellipse(c,x+w-38,y+7,4,9,'#82ad7c');}
-line(c,[[x+8,y+h-8],[x+w-8,y+h-8]],'#704f382a',1);}
+line(c,[[x+8,y+h-8],[x+w-8,y+h-8]],'#704f382a',1);
+// Cadeira no ponto exato de chairSpot() — o mesmo ponto onde o boneco sentado é desenhado, por isso nunca desalinha.
+{const cs=chairSpot(o);ellipse(c,cs.x-9,cs.y+13,4,2,'#1c2830');ellipse(c,cs.x+9,cs.y+13,4,2,'#1c2830');round(c,cs.x-1.5,cs.y+4,3,10,1,'#1c2830');round(c,cs.x-16,cs.y-14,32,26,7,'#2b3742');round(c,cs.x-13,cs.y-12,26,20,5,'#3c4c58');}
+}
 text(c,o.label,x+w/2,y+h+17,11)}
 function background(c,f,time){setFloor(f);const l=layout(f);c.imageSmoothingEnabled=true;round(c,0,0,960,108,0,'#375c65');floor(c,l);c.fillStyle=shade(l.theme,-40);c.fillRect(0,100,960,10);c.fillStyle=shade(l.theme,-6);c.fillRect(0,108,960,2);for(let x of [45,190,650,795]){round(c,x,20,112,62,5,'#cfcca9');round(c,x+5,25,102,51,2,time<480||time>=1080?'#426075':'#afd3cf');line(c,[[x+56,26],[x+56,76]],'#e6e0be',3)}round(c,412,14,136,94,6,'#223f4c');round(c,425,33,110,72,2,'#9eb4b4');line(c,[[480,34],[480,105]],'#4f6e7c',3);round(c,461,17,38,13,2,'#17333e');text(c,'0'+f,480,28,11,'#f3d490');
 // Relógio de parede com hora do jogo a sério (não decorativo) — mesmo elemento em todos os andares.
@@ -154,5 +158,5 @@ c.save();c.translate(x,y+bob);ellipse(c,0,10,12,3.5,'#20363d30');if(selected){c.
 round(c,-7,1,6,8,2,'#39495a');round(c,1,1,6,8,2,'#39495a');round(c,-8,7,8,4,2,'#233341');round(c,0,7,8,4,2,'#233341');
 round(c,side?-7:vertical?-8:-10,-15,side?14:vertical?16:20,16,5,a.shirt);round(c,side?-3:-9,-9+armL,5,10,3,a.shirt);ellipse(c,side?0:-10.5,-1+armL,2.6,3,a.skin);if(!side){round(c,8,-9+armR,5,10,3,a.shirt);ellipse(c,10.5,-1+armR,2.6,3,a.skin)}
 face(c,a,dir);c.restore()}
-const api={furniture,gridPoint,coffeePoint,destination,setFloor,layout,desks:[],blocked,safe,facing,move,path,home,World,sprite:(c,x,y,a,dir,stride,moving,selected,seated)=>{if(seated){spriteSeated(c,x,y,a,dir,selected);return;}if(!root.WALK_SHEET?.draw(c,x,y,a,dir,stride,moving,selected))spriteNatural(c,x,y,a,dir,stride,moving,selected)},portrait,background,round,ellipse,text};root.SCENE=api;if(typeof module!=='undefined')module.exports=api;
+const api={furniture,gridPoint,coffeePoint,destination,setFloor,layout,desks:[],blocked,safe,facing,move,path,home,World,chairSpot,sprite:(c,x,y,a,dir,stride,moving,selected,seated)=>{if(seated){spriteSeated(c,x,y,a,dir,selected);return;}if(!root.WALK_SHEET?.draw(c,x,y,a,dir,stride,moving,selected))spriteNatural(c,x,y,a,dir,stride,moving,selected)},portrait,background,round,ellipse,text};root.SCENE=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

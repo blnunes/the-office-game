@@ -71,6 +71,15 @@ Pedido do utilizador: o jogo parecia "completamente estático" — pediu para re
 - **Balcão de receção:** ganhou uma sineta de atendimento com um brilho lento, e o monitor da Lia tem um leve pulsar de cor (sugere ecrã ligado, não uma imagem morta).
 - **Por fazer, se quiseres ir mais longe:** a única forma de animar as secretárias/café/quadro/plantas "a sério" é ou (a) parar de usar `office-props.png` para esses tipos e redesenhar tudo em procedural (como fiz para a receção — mais trabalho, mas dá controlo total), ou (b) aceitar que esses ficam estáticos e só o boneco + ambiente à volta se mexem. Vale a pena perguntares ao utilizador qual prefere antes de avançar mais nesta frente.
 
+## Secretárias deixam de ser imagem estática (20/09, sessão Claude Code)
+
+Pedido do utilizador, direto: "preciso de um boneco sentado na cadeira caso esteja a performar a ação de trabalhar, uma estação estática não serve de nada." Ou seja: preferem alinhamento correto e funcional a manter a imagem bonita mas fixa do `office-props.png`.
+
+- `furniture()`: `type==='desk'` deixou de usar `OFFICE_ART.draw` — passou a ser sempre desenhado por mim (mesma família visual que `executive`/`console`: tampo, monitor, teclado, porta-retrato). `coffee`/`board`/`plant` continuam na imagem (não têm o problema de "alguém sentado").
+- Nova função `chairSpot(o)` (em `scene.js`, exportada em `SCENE`): dado um objeto de mobília (`desk`/`executive`/`console`/`reception`), devolve o ponto exato onde a cadeira fica. **A mesma função é usada para desenhar a cadeira em `furniture()` e para posicionar o boneco sentado em `app.js`** — os dois nunca podem voltar a desalinhar, porque vêm da mesma fonte de verdade, em vez de a posição do boneco depender da coordenada solta em `seats[]`.
+- `app.js` (`draw()`): quando alguém está a trabalhar numa secretária, a posição de desenho passa a ser `SCENE.chairSpot(objeto)`, não a coordenada de `seats[]` (que era só uma aproximação, nunca pensada para bater certo com a cadeira desenhada).
+- 50 testes continuam a passar; confirmado no navegador que o boneco fica mesmo dentro da cadeira, não a pairar ao lado.
+
 ## Próximas melhorias (prioridade do Codex, ainda abertas)
 
 - Observar no navegador: NPC com `!` a aproximar-se, dois NPCs no café, grupo grande no andar executivo.
