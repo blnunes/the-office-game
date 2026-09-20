@@ -24,6 +24,15 @@
 4. A arte continua simples. Não declarar a revisão visual concluída.
 5. O servidor original na porta 8765 (Python) respondia vazio e não pôde ser encerrado pelo Codex. Reabrir com `Abrir.command` se necessário; outra porta usa outro save.
 
+## Revisão visual (20/09, sessão Claude Code)
+
+Avaliação pedida pelo utilizador: a arte atual não é pixel art nem lembra um RPG 2D de mercado (tipo Stardew Valley). Confirmado no navegador (`tests/visual.html`), não só por teste automatizado — testes cobrem lógica/proporção, não estética.
+
+- Antes: chão era um retângulo de cor sólida; móveis/objetos vetoriais lisos (gradientes, cantos arredondados) em `office-art.js`/`assets/office-props.png`; personagens em `assets/worker-*.png`, estilo "emoji" flat, sem relação com pixel art.
+- Limitação importante: o Codex tinha uma ferramenta de geração de imagem integrada (ver `assets/SPRITES.md`/`OFFICE-ART.md`) que gerou os PNGs atuais. O Claude Code, nesta sessão, não tem essa ferramenta disponível — não dá para gerar novos PNGs a partir de prompt. A alternativa viável é pixel art procedural (desenhada em código, canvas, cores lisas e bordas duras, sem gradiente/blur), que também respeita a regra de "sem assets externos".
+- Feito nesta sessão: chão reescrito em `scene.js` (`floor()`) como grelha de tiles 40×40 em xadrez com juntas e pontos de desgaste, mais rodapé na base da parede — primeira peça, maior alavanca visual por esforço. Sem mudança de jogabilidade (colisão/`blocked()` intocados). 50 testes continuam a passar.
+- Por fazer, ainda no estilo "vetor liso": mobília (`office-art.js`, `furniture()` em `scene.js`) e personagens (`spritesheet.js`, `assets/worker-*.png`, retratos em `portrait()`). É o maior esforço — 70 NPCs, sistema de troca de paleta por pessoa já existente, mas desenho-base precisa de refazer em pixel art. Convém tratar em iteração própria, com revisão visual intermédia (screenshots) antes de aplicar a todos os NPCs.
+
 ## Próximas melhorias (prioridade do Codex, ainda abertas)
 
 - Observar no navegador: NPC com `!` a aproximar-se, dois NPCs no café, grupo grande no andar executivo.
