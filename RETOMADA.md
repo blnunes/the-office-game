@@ -4,9 +4,10 @@
 
 ## Estado verificado em 20/09/2026
 
-- `node --test outputs/proximo-andar/tests/*.cjs`: 50 testes aprovados, 0 falhas. (Os documentos antigos falavam em 38.)
+- `node --test tests/*.cjs`: 50 testes aprovados, 0 falhas. (Os documentos antigos falavam em 38.)
 - `outputs/Proximo-Andar.zip` (13/09) contém `careers.js`, `career-ui.js`, `living.js` e `living-ui.js`. Não foi comparado ficheiro a ficheiro com a pasta atual; recriar o ZIP depois da próxima alteração.
 - Não verificado nesta sessão: jogo no navegador, servidor local, FPS, partida humana completa.
+- Estrutura achatada: o jogo estava em `outputs/proximo-andar/` (convenção do Codex); agora vive na raiz do repositório (`git mv`, histórico preservado). `outputs/` só guarda o `.zip` da entrega.
 
 ## O que o jogo tem hoje
 
