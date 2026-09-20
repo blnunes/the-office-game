@@ -1,8 +1,9 @@
-personalConversation=function(id){let n=D.npcs[id];conversation(n,game.personalLine(id),[
-{label:'Entendo por que isso é importante para você.',action:"respondPersonally("+id+",'empathize')"},
-{label:'Eu vejo de outro jeito. Posso discordar?',action:"respondPersonally("+id+",'disagree')"},
-{label:'Isso é ridículo. Você leva isso a sério?',action:"respondPersonally("+id+",'mock')"},
-{label:'Quero pedir desculpas pela forma como falei.',action:"respondPersonally("+id+",'apologize')"}],n.background)};
+// As quatro opções citam o assunto real de cada pessoa (n.topic, ver careers.js) em vez de um menu igual para todo mundo.
+personalConversation=function(id){let n=D.npcs[id],t=n.topic||'isso';conversation(n,game.personalLine(id),[
+{label:'Entendo por que '+t+' importa tanto pra você.',action:"respondPersonally("+id+",'empathize')"},
+{label:'Eu vejo '+t+' de um jeito diferente do seu. Posso discordar?',action:"respondPersonally("+id+",'disagree')"},
+{label:'Sério que você liga tanto assim pra '+t+'?',action:"respondPersonally("+id+",'mock')"},
+{label:'Desculpa ter zoado de você por '+t+'.',action:"respondPersonally("+id+",'apologize')"}],n.background)};
 function respondPersonally(id,choice){let result=game.socialChoice(id,choice);if(!result)return;save();refresh();conversation(D.npcs[id],result.text,[{label:'Vamos encerrar por agora.',action:'dismissModal()'},{label:'Quero conversar mais.',action:'personalConversation('+id+')'}],'Confiança '+(result.delta>=0?'+':'')+result.delta+' · opiniões diferentes não são o mesmo que desrespeito.')}
 const originalPersonInfo=personInfo;
 const beforeLivingRefresh=refresh;
