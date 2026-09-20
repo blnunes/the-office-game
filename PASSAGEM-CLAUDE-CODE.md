@@ -5,7 +5,7 @@ Criado em 20/09/2026 no Claude (Cowork), para continuar o trabalho no Claude Cod
 ## Como abrir
 
 ```sh
-cd /Users/brunonunes/Documents/Codex/2026-09-11/proximo-andar
+cd ~/workspace/the-office-game
 claude
 ```
 
@@ -19,7 +19,7 @@ Lê CLAUDE.md, RETOMADA.md e PASSAGEM-CLAUDE-CODE.md. Estamos a continuar uma mi
 
 ## O que já foi feito
 
-- Projeto localizado e lido: `2026-09-11/proximo-andar` (jogo agora na raiz do repo — ver estrutura abaixo).
+- Projeto localizado e lido: era `Documents/Codex/2026-09-11/proximo-andar`; desde 20/09/2026 vive em `~/workspace/the-office-game` (jogo na raiz do repo — ver estrutura abaixo).
 - Testes corridos: 50 aprovados, 0 falhas (confirmado de novo depois de mover ficheiros).
 - Criados `CLAUDE.md`, `RETOMADA.md` (atualizado) e `RETOMADA.codex-original.md` (cópia da versão do Codex).
 - `git init` (branch `main`) com um commit inicial de 63 ficheiros. `.gitignore`: `.DS_Store`, `node_modules/`, `outputs/Proximo-Andar.zip`.

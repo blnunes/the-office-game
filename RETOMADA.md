@@ -8,6 +8,7 @@
 - `outputs/Proximo-Andar.zip` (13/09) contém `careers.js`, `career-ui.js`, `living.js` e `living-ui.js`. Não foi comparado ficheiro a ficheiro com a pasta atual; recriar o ZIP depois da próxima alteração.
 - Não verificado nesta sessão: jogo no navegador, servidor local, FPS, partida humana completa.
 - Estrutura achatada: o jogo estava em `outputs/proximo-andar/` (convenção do Codex); agora vive na raiz do repositório (`git mv`, histórico preservado). `outputs/` só guarda o `.zip` da entrega.
+- **Pasta mudou (20/09/2026):** de `~/Documents/Codex/2026-09-11/proximo-andar` para **`~/workspace/the-office-game`** (`mv` da pasta inteira, `.git` incluído — histórico intacto). Nenhum ficheiro tinha caminhos absolutos: `launcher.py`, `Abrir.command` e `jogo.sh` resolvem tudo a partir da localização do próprio ficheiro. **A chave do save continua `localStorage['proximo-andar-v1']` e o endereço continua `127.0.0.1:8765` — não mexer em nenhum dos dois, ou a carreira guardada perde-se.** O título do jogo continua "Próximo Andar"; só o nome da pasta mudou. `RETOMADA.codex-original.md` guarda caminhos antigos de propósito: é arquivo histórico, não se reescreve.
 
 ## O que o jogo tem hoje
 
@@ -79,6 +80,71 @@ Pedido do utilizador, direto: "preciso de um boneco sentado na cadeira caso este
 - Nova função `chairSpot(o)` (em `scene.js`, exportada em `SCENE`): dado um objeto de mobília (`desk`/`executive`/`console`/`reception`), devolve o ponto exato onde a cadeira fica. **A mesma função é usada para desenhar a cadeira em `furniture()` e para posicionar o boneco sentado em `app.js`** — os dois nunca podem voltar a desalinhar, porque vêm da mesma fonte de verdade, em vez de a posição do boneco depender da coordenada solta em `seats[]`.
 - `app.js` (`draw()`): quando alguém está a trabalhar numa secretária, a posição de desenho passa a ser `SCENE.chairSpot(objeto)`, não a coordenada de `seats[]` (que era só uma aproximação, nunca pensada para bater certo com a cadeira desenhada).
 - 50 testes continuam a passar; confirmado no navegador que o boneco fica mesmo dentro da cadeira, não a pairar ao lado.
+
+## Andar 1 reconstruído: mobília, zonas e computadores (20/09, sessão Claude Code)
+
+Pedido do utilizador: a arte e a interação pareciam "um RPG dos anos 90"; queria o andar 1 com estrutura mais robusta — área de café com mesinhas onde os funcionários se sentam a conversar, sala de espera desenhada em vez de um quadrado, e computadores nas escrivaninhas mais detalhados.
+
+### Planta nova (`data.js`, andar 1)
+
+De 7 para 16 objetos, em quatro zonas legíveis: recepção (balcão + mural), sala de espera (sofá, poltrona, mesa de revistas, planta, duas divisórias), copa/café (bancada, máquina, duas mesinhas) e zona de trabalho (duas escrivaninhas, impressora, arquivo). `seats` do andar 1 reescrito para os novos postos. Os 14 slots continuam lá — **nenhum `id` de NPC foi tocado** (regra do `data.js`), por isso os saves antigos continuam válidos.
+
+Tipos novos: `partition`, `armchair`, `lowtable`, `counter`, `cafetable`, `printer`, `cabinet`. Nenhum entra em `propSizes`, por isso `prop-scale.cjs` continua a cobrir só `desk`/`board`/`coffee`/`plant`.
+
+### Armadilha encontrada: arestas em cima da grelha de navegação
+
+`blocked()` usa margens de ±12 em x e ±10 em y, e a rota anda numa grelha de 20px (x a partir de 40, y a partir de 120). Quando `o.y-10` (ou `o.x-12`, ou as bordas opostas) cai exatamente num múltiplo de 20, o pathfinding considera esse ponto livre (a comparação é `>`, estrita) mas `move()` trava lá por arredondamento de vírgula flutuante — a Lia ficou presa a meio do átrio com 30 pontos de rota por andar. A impressora, as duas mesinhas e as duas escrivaninhas foram deslocadas 2–3px para que nenhuma aresta caia na grelha.
+
+**Os outros andares têm o mesmo problema latente** (racks do 3, sofás do 4 e 6, mesa do conselho do 7, `meeting` do 5, `garden` do 7). Não estoura hoje porque nenhuma rota precisa de passar exatamente ali. Verificação rápida:
+
+```sh
+node -e "const D=require('./data.js');D.layouts.forEach((l,f)=>l.objects.forEach(o=>{const b=[];if((o.x-12)%20===0)b.push('x-');if((o.x+o.w+12)%20===0)b.push('x+');if((o.y-10)%20===0)b.push('y-');if((o.y+o.h+10)%20===0)b.push('y+');if(b.length)console.log(f+1,o.type,o.label,b.join(','))}))"
+```
+
+Vale a pena correr também a verificação de ilhas (grelha livre toda alcançável a partir de um ponto) depois de mexer em qualquer planta.
+
+### Desenho (`scene.js`)
+
+- `furniture()` reescrito à volta de peças partilhadas: `slab()` (tampo com espessura e veio), `monitor()` (base, haste, moldura, ecrã com linhas de "código" e cursor a piscar), `keyboard()` (teclas a sério), `mouse()` com fio, `mug()` com vapor, `papers()`, `officeChair()` (base de cinco raios com rodízios), `upholstery()` (sofá/poltrona com braços e almofadas separadas), `cafeChair()`, `partition()` (vidro fosco entre montantes), `counterUnit()`, `cabinetUnit()`, `printerUnit()`.
+- `receptionZones()`: tapete da espera, passadeira da entrada, piso próprio da copa e carpete da zona de trabalho. Antes o chão era xadrez uniforme e cada móvel parecia largado.
+- Parede: janelas com caixilho, peitoril e vista (céu de dia, cidade acesa à noite, reflexo); no andar 1, placa da marca e um quadro. **A placa estava a tapar o relógio de parede (x 340–374) — foi por isso que mudou para o vão entre o elevador e a janela.**
+- Legendas: chapa translúcida por trás (lêem-se por cima da mobília), sobem quando cairiam noutro móvel, e descem para baixo da cadeira nas secretárias (caíam em cima da cabeça de quem está sentado). Tipos só de cenário (`SCENE.QUIET`) não têm legenda nem interação.
+
+### Pessoas sentadas
+
+- `chairSpot(o, from)` passou a aceitar quem se vai sentar: mesinhas de café e sofás têm vários lugares e escolhe-se o mais perto. `chairSeats(o)` dá os três lugares de uma mesinha e é a mesma fonte usada para desenhar as cadeiras — não podem desalinhar.
+- `app.js` separa `workSeats` (secretária/balcão) de `restSeats` (mesinha/sofá/poltrona): em pausa ou a conversar senta-se no café, a trabalhar senta-se à secretária. `spriteSeated()` ganhou dois modos — a trabalhar digita, em pausa pousa as mãos e segura uma caneca — mais gola e crachá.
+- `destination()`: havendo mesinha a menos de 90px da máquina, a pausa é feita sentado à mesa. O limite de 90px é deliberado — `story-routines.cjs` exige que quem tem compromisso marcado fique a menos de 100px de `coffeePoint()`.
+
+### Bug corrigido de caminho (não era só arte)
+
+`career-ui.js` (`interact`) refazia a procura do objeto com `find()` e um raio de ±65, ficando com o **primeiro da lista** em vez do mais próximo. Com mais mobília no andar 1 isso divergia do aviso no ecrã: dizia "E · Suporte de plantão" e abria "Mesa do café" com a tarefa genérica "Organizar a recepção". Passou a usar o objeto que `near()` já resolveu. `near()` também passou a ordenar por distância ao retângulo, em vez de aceitar o primeiro que apanha.
+
+### Verificado
+
+- `node --test tests/*.cjs`: 50 aprovados, 0 falhas.
+- No navegador (`tests/visual.html`, porta 8799, sem tocar no save da 8765): andar 1 de manhã, colegas sentados às secretárias, dois colegas sentados a conversar numa mesinha do café, e os andares 2, 4 e 7 sem regressões (usam `desk`/`sofa`/`executive`, que são partilhados).
+- Avisos vs. ação conferidos ponto a ponto: secretárias abrem a estação, sofá/poltrona/mesinha abrem a pausa, balcão abre o menu próprio, mural abre a tarefa local.
+- **Não verificado:** partida humana completa, FPS, e o efeito das peças partilhadas nos andares 3, 5 e 6.
+
+### Por fazer nesta frente
+
+- `meeting` e `boardtable` (andares 4, 5, 6, 7) continuam elipses lisas do desenho antigo — destoam da mobília nova.
+- O andar 2 é uma grelha de oito secretárias iguais; ganha em variedade o mesmo tratamento de zonas do andar 1.
+- Sprites de caminhada continuam as três folhas PNG (`worker-*.png`). Sem ferramenta de geração de imagem nesta sessão, só a pose sentada e os acessórios são desenháveis em código.
+
+## `jogo.sh` (20/09, sessão Claude Code)
+
+Pedido do utilizador: um start/stop mais fácil de executar a partir daqui. `launcher.py` prende a janela do Terminal (`serve_forever`) e abre o navegador — bom para jogar, mau para uma sessão de trabalho.
+
+`jogo.sh` sobe os servidores em segundo plano (`python3 -m http.server`, só `127.0.0.1`), guarda PID e log em `.run/` (no `.gitignore`), e espera que a porta responda mesmo antes de dizer que arrancou.
+
+- `start`/`qa` são idempotentes e **nunca** mexem numa porta que não tenham sido eles a abrir: se a 8765 já estiver ocupada (o `launcher.py` do utilizador, por exemplo), avisa e mostra o `lsof`, em vez de matar a sessão dele. `stop` só encerra PIDs do próprio ficheiro.
+- Duas portas de propósito: 8765 é a carreira a sério, 8799 é QA (`tests/visual.html`, armazenamento em memória). Os saves são por endereço.
+- `./jogo.sh cache` automatiza o passo que a `RETOMADA` repete há várias sessões: subir o `?v=` nos dois HTML depois de mexer em qualquer `.js`. Usa um carimbo `v=AAAAMMDDHHMM` (único), em vez da letra incremental à mão.
+- `jogo.sh` foi acrescentado à lista do ZIP em `CLAUDE.md`.
+
+Testado: start/stop/restart/status, idempotência, `qa`, guarda de porta ocupada (com um `http.server` externo na 8765), `cache`, `test` (50 aprovados) e `zip` (46 ficheiros).
 
 ## Próximas melhorias (prioridade do Codex, ainda abertas)
 

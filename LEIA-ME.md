@@ -97,3 +97,20 @@ Pausas escalonadas, destinos reservados e navegação em pontos livres corrigem 
 Três episódios conectam Lia, Helena e Caio a diagnóstico, revisão e implementação. Personagens se aproximam, decisões ficam salvas, falhas não concluem pedidos e agradecimentos não dão recompensas repetidas. O objetivo aparece no painel. As demais conversas ainda usam o sistema anterior; não são 70 histórias individuais. A arte continua procedural e ainda precisa de uma revisão visual dedicada.
 
 Teste adicional: `node --test tests/story-routines.cjs`.
+
+## Revisão 0.5 — andar 1 com estrutura de escritório
+
+O primeiro andar deixou de ser um chão xadrez com sete objetos soltos e passou a ter quatro zonas desenhadas:
+
+- **Recepção:** balcão com fachada, letreiro, posto de trabalho, sineta e terminal de crachás; mural ao lado.
+- **Sala de espera:** recanto fechado por divisórias de vidro fosco, com tapete, sofá, poltrona, mesa de revistas e planta — já não é um retângulo no meio do nada.
+- **Copa e café:** bancada com lava-loiça e micro-ondas, máquina de café e duas mesinhas com cadeiras. Colegas em pausa sentam-se mesmo à mesa e conversam ali.
+- **Zona de trabalho:** duas escrivaninhas com computador desenhado ao detalhe (monitor com base e ecrã aceso, teclado com teclas, rato com fio, caneca, papéis, gaveteiro), cadeira de rodízios, impressora e arquivo.
+
+As janelas passaram a ter caixilho, peitoril e vista — céu de dia, cidade acesa à noite. Quem trabalha aparece sentado na cadeira, a digitar; quem está em pausa aparece sentado à mesa do café, com a caneca na mão.
+
+As legendas dos objetos ganharam uma chapa por trás e saem de cima dos bonecos. Plantas, divisórias, arquivo, bancada e impressora são cenário: não abrem menus nem têm legenda.
+
+Corrigido: com mais mobília, o aviso no ecrã e a ação de `E` podiam divergir (dizia "Suporte de plantão" e abria "Mesa do café"). Agora ambos usam o objeto mais próximo.
+
+A mobília dos outros andares herdou as peças partilhadas (secretárias, sofás, mesas executivas). As mesas de reunião e a mesa do conselho continuam no desenho antigo.

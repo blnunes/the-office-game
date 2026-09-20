@@ -26,7 +26,7 @@ Jogo na raiz do repositório (scripts clássicos, ordem de carga em `index.html`
 - `scene.js` — mundo: movimento, colisões, rotas, desenho no Canvas. Exporta `World` e `gridPoint`.
 - `spritesheet.js`, `office-art.js`, `assets/*.png` — sprites e objetos (gerados por imagem; ver `assets/SPRITES.md` e `OFFICE-ART.md`).
 - `gameplay-ui.js`, `app.js`, `style.css`, `index.html` — interface e coordenação.
-- `launcher.py` / `Abrir.command` — servidor local opcional em 127.0.0.1.
+- `launcher.py` / `Abrir.command` — servidor local opcional em 127.0.0.1. `jogo.sh` — o mesmo em segundo plano, com start/stop (ver Comandos).
 
 ATENÇÃO: os `.js` têm poucas linhas mas muito comprimento (código denso). Não leia ficheiros inteiros: use `grep -o`, `grep -n` com padrões curtos, ou `python3` para extrair/editar por leitura-modificação-escrita. Nunca reescreva um ficheiro a partir de saída truncada.
 
@@ -39,14 +39,26 @@ node --test tests/*.cjs          # bateria completa; estado atual: 50 aprovados,
 node --test tests/story-routines.cjs   # exemplo de teste isolado
 ```
 
-Correr o jogo: `python3 launcher.py` (ou duplo clique em `Abrir.command`), abrir http://127.0.0.1:8765/. Alternativa: abrir `index.html` (o save fica separado por método de abertura).
+Servidores e tarefas correntes, sem prender o terminal (`jogo.sh`, em segundo plano, com PID em `.run/`):
+
+```sh
+./jogo.sh start      # jogo na 8765 (save real) · stop | restart | status | open
+./jogo.sh qa         # QA visual na 8799 (tests/visual.html, memória) · qa-stop | qa-open
+./jogo.sh cache      # sobe o ?v= em index.html e tests/visual.html — obrigatório depois de mexer em .js
+./jogo.sh test       # node --test tests/*.cjs
+./jogo.sh zip        # recria outputs/Proximo-Andar.zip
+```
+
+`start`/`qa` são idempotentes e recusam-se a mexer numa porta que não tenham sido eles a abrir — se o utilizador tiver o `launcher.py` na 8765, o script avisa em vez de matar a sessão dele. `stop` só encerra o que o próprio script iniciou.
+
+Alternativa para o utilizador: duplo clique em `Abrir.command` (usa `launcher.py`, abre o navegador e prende a janela do Terminal). Ou abrir `index.html` direto — mas o save fica separado por método de abertura.
 
 Recriar a entrega compactada, depois de alterações (lista explícita: raiz já tem `CLAUDE.md`/`RETOMADA*.md`, que não fazem parte do jogo):
 
 ```sh
 zip -qr outputs/Proximo-Andar.zip Abrir.command LEIA-ME.md REVISAO-CARREIRAS.md \
   app.js assets career-ui.js careers.js data.js engine.js gameplay-ui.js index.html \
-  launcher.py living-ui.js living.js minigames.js office-art.js scene.js \
+  jogo.sh launcher.py living-ui.js living.js minigames.js office-art.js scene.js \
   spritesheet.js style.css tests -x '*.DS_Store'
 ```
 
@@ -56,4 +68,4 @@ zip -qr outputs/Proximo-Andar.zip Abrir.command LEIA-ME.md REVISAO-CARREIRAS.md 
 
 ## Pendências conhecidas
 
-Ver `RETOMADA.md`. Resumo: conferir gargalos de colisão com muitos executivos, migração de saves sem `navigation: 3`, arte ainda simples (3 modelos de sprite), só 14 personagens com histórias próprias, `LEIA-ME.md` ainda descreve a revisão 0.3/0.4.
+Ver `RETOMADA.md`. Resumo: conferir gargalos de colisão com muitos executivos, migração de saves sem `navigation: 3`, sprites de caminhada ainda são 3 folhas PNG, só 17 dos 70 personagens têm história própria, mesas de reunião (`meeting`/`boardtable`) e a planta do andar 2 ainda não receberam o tratamento dado ao andar 1, e há arestas de mobília em cima da grelha de navegação nos andares 3–7 (bug latente de personagens presos; ver `RETOMADA.md`).
