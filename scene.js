@@ -112,6 +112,7 @@ round(c,x,y+h-24,w,24,6,'#63877e');round(c,x+4,y+h-21,w-8,7,3,'#7fa199');
 round(c,x+16,y+h-15,w-32,12,3,'#233845');text(c,'NIMBUS · RECEPÇÃO',x+w/2,y+h-6,11,'#f4e5bd');
 round(c,x+24,y+8,32,20,2,'#253f50');round(c,x+26,y+10,28,15,1,'#80acb5');line(c,[[x+30,y+17],[x+44,y+17]],'#d6edd0',1.5);
 round(c,x+28,y+30,26,7,1,'#e9d7a9');
+round(c,x+114,y-16,28,18,4,'#3a4a58');round(c,x+117,y-14,22,12,3,'#4c5c68');
 round(c,x+w-32,y+6,16,16,2,'#f7ead2');line(c,[[x+w-28,y+11],[x+w-20,y+11]],'#c9a86c',1.5);line(c,[[x+w-28,y+15],[x+w-20,y+15]],'#c9a86c',1.5);
 plant(c,x+w+14,y+h-6);
 }else if(type==='sofa'){round(c,x,y,w,h,12,'#719388');round(c,x+10,y+9,w-20,h-18,8,'#91ac96');round(c,x,y,12,h,5,'#577b73');round(c,x+w-12,y,12,h,5,'#577b73');line(c,[[x+w/2,y+10],[x+w/2,y+h-9]],'#688d80')}else if(type==='coffee'){round(c,x,y,w,h,5,'#bd9b6a');round(c,x+10,y+5,38,h-10,4,'#3a5061');round(c,x+16,y+10,25,12,2,'#90b4b7');round(c,x+22,y+h-21,12,10,3,'#f5e3bb');for(let i=0;i<3;i++)ellipse(c,x+65+i*15,y+24,5,6,'#f3dec1')}else if(type==='rack'){round(c,x,y,w,h,5,'#344957');for(let i=0;i<4;i++){round(c,x+5,y+8+i*25,w-10,20,3,'#57717c');ellipse(c,x+w-14,y+17+i*25,2,2,'#a8dfbc');line(c,[[x+12,y+14+i*25],[x+30,y+14+i*25]],'#2e4857',2)}}else if(type==='board'){round(c,x,y,w,h,4,'#91a7a1');round(c,x+4,y+4,w-8,h-8,2,'#e7e9ce');for(let i=0;i<4;i++)round(c,x+12+i*(w-25)/4,y+9,Math.max(12,w/6),h-17,2,['#efc277','#9dbfbd','#c4a6a4','#a3b990'][i])}else if(type==='garden'){round(c,x,y,w,h,10,'#779276');for(let j=0;j<4;j++)plant(c,x+w/2,y+40+j*48)}else if(type==='plant'){plant(c,x+w/2,y+h-4)}else{ellipse(c,x+w/2,y+h/2,w/2,h/2,type==='boardtable'?'#936f54':'#92a7a3');ellipse(c,x+w/2,y+h/2,w/2-5,h/2-5,type==='boardtable'?'#c3a075':'#b8c4b0');for(let i=1;i<=3;i++){round(c,x+w*i/4-12,y+12,24,15,3,'#eae5ca');round(c,x+w*i/4-12,y+h-27,24,15,3,'#4d7080')}}if(['desk','executive','console'].includes(type)){
@@ -131,12 +132,11 @@ plant(c,296,420);
 }
 for(let o of l.objects)furniture(c,o,f);plant(c,48,130);plant(c,916,535);round(c,365,558,230,42,5,'#547c78');text(c,'SAÍDA DO ESCRITÓRIO',480,585,13,'#fff0c4');if(time<480||time>=1080){c.fillStyle='#23365418';c.fillRect(0,0,960,600)}}
 // Pose sentada: pernas curtas escondidas atrás de um encosto de cadeira, em vez de alguém de pé encostado à secretária.
-function spriteSeated(c,x,y,a,dir='up',selected=false){const side=dir==='left'||dir==='right',vertical=dir==='up'||dir==='down';c.save();c.translate(x,y);ellipse(c,0,13,13,4,'#20363d30');if(selected){c.strokeStyle='#f7d687';c.lineWidth=1.5;c.beginPath();c.ellipse(0,13,17,6,0,0,Math.PI*2);c.stroke()}
-// Base com rodízios e coluna, encosto bem mais largo que os ombros: lê como cadeira mesmo atrás do corpo.
-ellipse(c,-9,13,4,2,'#1c2830');ellipse(c,9,13,4,2,'#1c2830');round(c,-1.5,4,3,10,1,'#1c2830');
-round(c,-16,-20,32,26,7,'#2b3742');round(c,-13,-18,26,20,5,'#3c4c58');
-round(c,-7,2,6,7,2,'#39495a');round(c,1,2,6,7,2,'#39495a');round(c,-9,7,9,5,2,'#233341');round(c,1,7,9,5,2,'#233341');
-round(c,side?-7:vertical?-8:-10,-15,side?14:vertical?16:20,16,5,a.shirt);round(c,side?-3:-13,-9,5,10,3,a.shirt);ellipse(c,side?0:-10.5,-1,2.6,3,a.skin);if(!side){round(c,8,-9,5,10,3,a.shirt);ellipse(c,10.5,-1,2.6,3,a.skin)}
+// Só o corpo: a cadeira é sempre desenhada pela mobília (imagem ou procedural), nunca aqui,
+// para não duplicar nem desalinhar com a cadeira que já existe na secretária.
+function spriteSeated(c,x,y,a,dir='up',selected=false){const side=dir==='left'||dir==='right',vertical=dir==='up'||dir==='down';c.save();c.translate(x,y);ellipse(c,0,10,12,3.5,'#20363d30');if(selected){c.strokeStyle='#f7d687';c.lineWidth=1.5;c.beginPath();c.ellipse(0,10,15,5,0,0,Math.PI*2);c.stroke()}
+round(c,-7,1,6,8,2,'#39495a');round(c,1,1,6,8,2,'#39495a');round(c,-8,7,8,4,2,'#233341');round(c,0,7,8,4,2,'#233341');
+round(c,side?-7:vertical?-8:-10,-15,side?14:vertical?16:20,16,5,a.shirt);round(c,side?-3:-9,-9,5,10,3,a.shirt);ellipse(c,side?0:-10.5,-1,2.6,3,a.skin);if(!side){round(c,8,-9,5,10,3,a.shirt);ellipse(c,10.5,-1,2.6,3,a.skin)}
 face(c,a,dir);c.restore()}
 const api={furniture,gridPoint,coffeePoint,destination,setFloor,layout,desks:[],blocked,safe,facing,move,path,home,World,sprite:(c,x,y,a,dir,stride,moving,selected,seated)=>{if(seated){spriteSeated(c,x,y,a,dir,selected);return;}if(!root.WALK_SHEET?.draw(c,x,y,a,dir,stride,moving,selected))spriteNatural(c,x,y,a,dir,stride,moving,selected)},portrait,background,round,ellipse,text};root.SCENE=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
