@@ -1,7 +1,7 @@
 const {play}=require('./helpers.cjs');
 const assert=require('node:assert/strict');const D=require('../data.js'),Game=require('../engine.js');
 let checks=0;function test(name,fn){fn();checks++;console.log('PASS',name)}
-test('70 NPCs / distribuição / centrais',()=>{assert.equal(D.npcs.length,70);assert.deepEqual(D.counts,D.floors.map((_,f)=>D.npcs.filter(n=>n.floor===f+1).length));assert.equal(D.npcs.filter(n=>n.central&&n.events.length>=3).length,17)});
+test('70 NPCs / distribuição / centrais',()=>{assert.equal(D.npcs.length,70);assert.deepEqual(D.counts,D.floors.map((_,f)=>D.npcs.filter(n=>n.floor===f+1).length));assert.equal(D.npcs.filter(n=>n.central&&n.events.length>=3).length,20)});
 test('elevador / acesso',()=>{let g=new Game();assert(g.go(2));assert(!g.go(7));g.s.invitations.push(7);assert(g.go(7))});
 test('diálogo / anti-farming / preparo',()=>{let g=new Game();g.talk(0,'listen');assert.equal(g.s.relations[0],6);let t=g.s.time;assert(!g.talk(0,'listen'));assert.equal(g.s.time,t);g.talk(0,'advice');assert(g.s.prepared);g.talk(0,'support');assert(!g.s.supports.includes(0))});
 test('tarefa / tempo / energia / fadiga',()=>{let g=new Game();play(g,'bug','segura');assert.equal(g.s.time,520);assert.equal(g.s.energy,93);assert(g.s.deliveries>0);assert(g.s.fatigue>=7&&g.s.fatigue<8);play(g,'bug','segura');assert(!play(g,'bug','segura'))});

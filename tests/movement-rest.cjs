@@ -3,12 +3,14 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const D=require('../data.js'),Game=require('../engine.js'),S=require('../scene.js');
 
 test('quatro direções, passos por distância e parada imediata contra parede',()=>{
+ S.setFloor(3);
  for(const [dx,dy,dir] of [[1,0,'right'],[-1,0,'left'],[0,1,'down'],[0,-1,'up']]){let b={x:480,y:320};S.move(b,dx,dy,.1);assert.equal(b.facing,dir);assert(b.moving);assert(Math.abs(b.stride-15)<.001);S.move(b,0,0,.1);assert(!b.moving);assert.equal(b.facing,dir)}
  let b={x:40,y:320};S.move(b,-1,0,.1);assert.equal(b.x,40);assert(!b.moving);assert.equal(b.stride,0);
 });
 test('velocidade diagonal normalizada e independente de 30/60/120 FPS',()=>{
+ S.setFloor(3);
  let results=[];for(let fps of [30,60,120]){let b={x:480,y:320};for(let i=0;i<fps;i++)S.move(b,0,1,1/fps);results.push(b.y)}for(let y of results)assert(Math.abs(y-470)<.001);
- let b={x:100,y:300};assert(Math.abs(S.move(b,1,1,.1)-15)<.001);
+ let b={x:450,y:300};assert(Math.abs(S.move(b,1,1,.1)-15)<.001);
 });
 test('busca de caminho contorna mesas e não atravessa obstáculos',()=>{
  let from={x:480,y:490},to=S.gridPoint({x:120,y:180}),route=S.path(from,to);assert(route.length>0);let b={...from};for(let p of route){assert(!S.blocked(p.x,p.y));for(let i=0;i<300&&Math.hypot(p.x-b.x,p.y-b.y)>1;i++){let dist=Math.hypot(p.x-b.x,p.y-b.y);S.move(b,p.x-b.x,p.y-b.y,Math.min(1/60,dist/150));assert(!S.blocked(b.x,b.y))}}assert(Math.hypot(b.x-to.x,b.y-to.y)<2);

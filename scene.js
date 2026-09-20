@@ -379,6 +379,10 @@ ellipse(c,357,52,1.4,1.4,'#f3d490');}
 
 // Piso 1: parede de marca por trás do balcão e dois quadros do lado da copa.
 if(f===1){round(c,554,20,92,64,6,'#2a4a54');round(c,558,24,84,56,4,'#35606a');text(c,'NIMBUS',600,50,16,'#f3d490');text(c,'TECHNOLOGIES',600,66,8,'#9fc3c0');round(c,914,28,42,46,4,'#c2b391');round(c,917,31,36,40,2,'#d9cdb0');for(let i=0;i<3;i++)round(c,921+i*12,37+(i%2)*8,8,26-(i%2)*8,1,['#cf8f7a','#7f9fa6','#9db88f'][i]);receptionZones(c,l);}
+if(f===2){
+// Divisórias baixas separam desenvolvimento, RH, marketing e pessoal em repartições visíveis, sem bloquear a passagem.
+for(let x of [312,517,722]){round(c,x,220,7,270,3,'#22384420');round(c,x,220,6,266,2,'#7c8f88');round(c,x,220,2,266,1,'#a4b3ad');}
+}
 for(let o of l.objects)furniture(c,o,f);plant(c,48,130);plant(c,916,535);round(c,365,558,230,42,5,'#547c78');text(c,'SAÍDA DO ESCRITÓRIO',480,585,13,'#fff0c4');if(time<480||time>=1080){c.fillStyle='#23365418';c.fillRect(0,0,960,600)}}
 // Pose sentada: pernas curtas escondidas atrás de um encosto de cadeira, em vez de alguém de pé encostado à secretária.
 // Só o corpo: a cadeira é sempre desenhada pela mobília (imagem ou procedural), nunca aqui,
