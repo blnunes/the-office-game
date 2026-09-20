@@ -121,7 +121,7 @@ function plant(c,x,y){if(root.OFFICE_ART?.draw(c,'plant',x-16,y-17,32,35))return
 // ---------------------------------------------------------------------------
 // Tipos só de cenário: não abrem menu (ver near() em app.js) nem mostram legenda.
 const QUIET=['plant','garden','partition','lowtable','cabinet','counter','printer'];
-function slab(c,x,y,w,h,top,edge,r=6,lip=8){
+function slab(c,x,y,w,h,top,edge){const r=6,lip=8;
  // Tampo com espessura: a aresta da frente é mais escura, para a mesa deixar de ser um retângulo liso.
  round(c,x,y+h-lip,w,lip+1,r,shade(edge,-14));round(c,x,y,w,h-lip+3,r,top);
  c.globalAlpha=.16;c.fillStyle=edge;for(let i=1;i*13<h-lip;i++)c.fillRect(x+5,y+i*13,w-10,1);c.globalAlpha=1;
@@ -165,14 +165,13 @@ function officeChair(c,cx,cy,back='#2b3742',seat='#3c4c58'){
  round(c,cx-16,cy-4,4,11,2,shade(back,-10));round(c,cx+12,cy-4,4,11,2,shade(back,-10));
  c.globalAlpha=.25;c.fillStyle='#0c151b';c.fillRect(cx-9,cy-9,18,1.5);c.fillRect(cx-9,cy-5,18,1.5);c.globalAlpha=1;
 }
-function stool(c,cx,cy,color='#7a6a52'){ellipse(c,cx,cy+2,9,6,shade(color,-30));ellipse(c,cx,cy,9,6,color);round(c,cx-8,cy-9,16,10,5,shade(color,14))}
 function chairSeats(o){
  // Lugares à volta de uma mesinha de café: é aqui que os colegas se sentam a conversar.
  const cx=o.x+o.w/2,cy=o.y+o.h/2,r=o.w*.55;
  return [{x:cx-r,y:cy+3},{x:cx+r,y:cy+3},{x:cx,y:cy-r*.72}];
 }
-function deskUnit(c,o,type){
- const{x,y,w,h}=o,wood=type==='executive'?'#8a6748':type==='console'?'#54707c':'#b48a5f';
+function deskUnit(c,o){
+ const{x,y,w,h,type}=o,wood=type==='executive'?'#8a6748':type==='console'?'#54707c':'#b48a5f';
  const top=type==='executive'?'#c39a6c':type==='console'?'#8fb0b8':'#ddbd8c';
  round(c,x+6,y+10,w,h-6,8,'#1c2e3020');
  slab(c,x,y,w,h,top,wood);legs(c,x,y,w,h,shade(wood,-26));
@@ -309,29 +308,64 @@ function cafeChair(c,cx,cy,ax,ay,color='#8a6f52'){
  round(c,-10,-9,17,18,4,shade(color,-20));round(c,-8.5,-7.5,14,15,3,color);round(c,-7.5,-6.5,12,6,2,shade(color,18));
  c.restore();
 }
-function furniture(c,o,f){let {x,y,w,h,type}=o;const quiet=QUIET.includes(type)||['reception','cafetable','armchair'].includes(type);
- const label=()=>{if(quiet)return;const cx=x+w/2;let ly=y+h+(['desk','executive','console'].includes(type)?52:17);if(layout(f).objects.some(q=>q!==o&&cx>q.x-30&&cx<q.x+q.w+30&&ly>q.y-6&&ly<q.y+q.h+6))ly=y-8;c.font='600 11px system-ui';const tw=c.measureText?.(o.label)?.width||o.label.length*6;c.globalAlpha=.55;round(c,cx-tw/2-6,ly-11,tw+12,15,7,'#f4efdd');c.globalAlpha=1;text(c,o.label,cx,ly,11,'#2f4a4d')};
- if(['coffee','board','plant'].includes(type)&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){label();return;}
- if(['desk','executive','console'].includes(type)){deskUnit(c,o,type);const cs=chairSpot(o);officeChair(c,cs.x,cs.y);label();return}
- if(type==='reception'){receptionDesk(c,o);const cs=chairSpot(o);officeChair(c,cs.x,cs.y);plant(c,x+w+16,y+h-8);label();return}
- if(type==='cafetable'){cafeTable(c,o);label();return}
- if(type==='armchair'){loungeChair(c,o);label();return}
- if(type==='lowtable'){lowTable(c,o);label();return}
- if(type==='partition'){partition(c,o);label();return}
- if(type==='counter'){counterUnit(c,o);label();return}
- if(type==='cabinet'){cabinetUnit(c,o);label();return}
- if(type==='printer'){printerUnit(c,o);label();return}
- if(type==='plant'){plant(c,x+w/2,y+h-4);label();return}
- round(c,x+5,y+9,w,h,8,'#223c3d20');
- if(type==='sofa'){upholstery(c,x,y,w,h,14,Math.max(2,Math.round(w/95)));}
- else if(type==='coffee'){round(c,x,y,w,h,5,'#bd9b6a');round(c,x+10,y+5,38,h-10,4,'#3a5061');round(c,x+16,y+10,25,12,2,'#90b4b7');round(c,x+22,y+h-21,12,10,3,'#f5e3bb');for(let i=0;i<3;i++)ellipse(c,x+65+i*15,y+24,5,6,'#f3dec1')}
- else if(type==='rack'){round(c,x,y,w,h,5,'#344957');for(let i=0;i<4;i++){round(c,x+5,y+8+i*25,w-10,20,3,'#57717c');
-  const on=Math.sin(now()*2.4+i*1.9+x*.02)>0;ellipse(c,x+w-14,y+17+i*25,2,2,on?'#a8dfbc':'#3c5049');
-  line(c,[[x+12,y+14+i*25],[x+30,y+14+i*25]],'#2e4857',2)}}
- else if(type==='board'){round(c,x,y,w,h,4,'#91a7a1');round(c,x+4,y+4,w-8,h-8,2,'#e7e9ce');for(let i=0;i<4;i++)round(c,x+12+i*(w-25)/4,y+9,Math.max(12,w/6),h-17,2,['#efc277','#9dbfbd','#c4a6a4','#a3b990'][i])}
- else if(type==='garden'){round(c,x,y,w,h,10,'#779276');for(let j=0;j<4;j++)plant(c,x+w/2,y+40+j*48)}
- else{ellipse(c,x+w/2,y+h/2,w/2,h/2,type==='boardtable'?'#936f54':'#92a7a3');ellipse(c,x+w/2,y+h/2,w/2-5,h/2-5,type==='boardtable'?'#c3a075':'#b8c4b0');for(let i=1;i<=3;i++){round(c,x+w*i/4-12,y+12,24,15,3,'#eae5ca');round(c,x+w*i/4-12,y+h-27,24,15,3,'#4d7080')}}
- label()}
+// Peças de mobília por tipo. Cada entrada desenha só a peça: a sombra, a cadeira e a
+// legenda são responsabilidade de furniture(), para não se repetirem em cada ramo.
+const SOFA=(c,o)=>upholstery(c,o.x,o.y,o.w,o.h,14,Math.max(2,Math.round(o.w/95)));
+function coffeeMachine(c,o){const{x,y,w,h}=o;
+ round(c,x,y,w,h,5,'#bd9b6a');round(c,x+10,y+5,38,h-10,4,'#3a5061');round(c,x+16,y+10,25,12,2,'#90b4b7');
+ round(c,x+22,y+h-21,12,10,3,'#f5e3bb');for(let i=0;i<3;i++)ellipse(c,x+65+i*15,y+24,5,6,'#f3dec1');
+}
+function rackUnit(c,o){const{x,y,w,h}=o;
+ round(c,x,y,w,h,5,'#344957');
+ for(let i=0;i<4;i++){
+  round(c,x+5,y+8+i*25,w-10,20,3,'#57717c');
+  // Luzes de status com fase própria, para não piscarem todas juntas.
+  const on=Math.sin(now()*2.4+i*1.9+x*.02)>0;
+  ellipse(c,x+w-14,y+17+i*25,2,2,on?'#a8dfbc':'#3c5049');
+  line(c,[[x+12,y+14+i*25],[x+30,y+14+i*25]],'#2e4857',2);
+ }
+}
+function boardUnit(c,o){const{x,y,w,h}=o,notas=['#efc277','#9dbfbd','#c4a6a4','#a3b990'];
+ round(c,x,y,w,h,4,'#91a7a1');round(c,x+4,y+4,w-8,h-8,2,'#e7e9ce');
+ for(let i=0;i<4;i++)round(c,x+12+i*(w-25)/4,y+9,Math.max(12,w/6),h-17,2,notas[i]);
+}
+function gardenUnit(c,o){const{x,y,w,h}=o;
+ round(c,x,y,w,h,10,'#779276');for(let j=0;j<4;j++)plant(c,x+w/2,y+40+j*48);
+}
+function roundTable(c,o){const{x,y,w,h,type}=o,conselho=type==='boardtable';
+ ellipse(c,x+w/2,y+h/2,w/2,h/2,conselho?'#936f54':'#92a7a3');
+ ellipse(c,x+w/2,y+h/2,w/2-5,h/2-5,conselho?'#c3a075':'#b8c4b0');
+ for(let i=1;i<=3;i++){round(c,x+w*i/4-12,y+12,24,15,3,'#eae5ca');round(c,x+w*i/4-12,y+h-27,24,15,3,'#4d7080')}
+}
+const PIECES={desk:deskUnit,executive:deskUnit,console:deskUnit,reception:receptionDesk,
+ cafetable:cafeTable,armchair:loungeChair,lowtable:lowTable,partition,counter:counterUnit,
+ cabinet:cabinetUnit,printer:printerUnit,plant:(c,o)=>plant(c,o.x+o.w/2,o.y+o.h-4),
+ sofa:SOFA,coffee:coffeeMachine,rack:rackUnit,board:boardUnit,garden:gardenUnit};
+// Tipos com cadeira no lugar dado por chairSpot(), e tipos que levam sombra projetada.
+const COM_CADEIRA=['desk','executive','console','reception'];
+const COM_SOMBRA=['sofa','coffee','rack','board','garden','meeting','boardtable'];
+// Balcão e mesinhas dizem o que são pelo próprio desenho; o resto do cenário não se anuncia.
+const SEM_LEGENDA=[...QUIET,'reception','cafetable','armchair'];
+function pieceLabel(c,o,f){
+ if(SEM_LEGENDA.includes(o.type))return;
+ const cx=o.x+o.w/2;
+ // Nas secretárias a legenda desce para baixo da cadeira; se cair noutro móvel, sobe.
+ let ly=o.y+o.h+(['desk','executive','console'].includes(o.type)?52:17);
+ if(layout(f).objects.some(q=>q!==o&&cx>q.x-30&&cx<q.x+q.w+30&&ly>q.y-6&&ly<q.y+q.h+6))ly=o.y-8;
+ c.font='600 11px system-ui';
+ const tw=c.measureText?.(o.label)?.width||o.label.length*6;
+ c.globalAlpha=.55;round(c,cx-tw/2-6,ly-11,tw+12,15,7,'#f4efdd');c.globalAlpha=1;
+ text(c,o.label,cx,ly,11,'#2f4a4d');
+}
+function furniture(c,o,f){const{x,y,w,h,type}=o;
+ // Café, mural e plantas continuam a vir de office-props.png quando a imagem já carregou.
+ if(['coffee','board','plant'].includes(type)&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){pieceLabel(c,o,f);return}
+ if(COM_SOMBRA.includes(type))round(c,x+5,y+9,w,h,8,'#223c3d20');
+ (PIECES[type]||roundTable)(c,o);
+ if(COM_CADEIRA.includes(type)){const cs=chairSpot(o);officeChair(c,cs.x,cs.y)}
+ if(type==='reception')plant(c,x+w+16,y+h-8);
+ pieceLabel(c,o,f);
+}
 function background(c,f,time){setFloor(f);const l=layout(f);c.imageSmoothingEnabled=true;round(c,0,0,960,108,0,'#375c65');floor(c,l);c.fillStyle=shade(l.theme,-40);c.fillRect(0,100,960,10);c.fillStyle=shade(l.theme,-6);c.fillRect(0,108,960,2);
 // Janela com caixilho, peitoril e vista (céu, silhueta de cidade, reflexo) em vez de um retângulo chapado.
 for(let x of [45,190,650,795]){const night=time<480||time>=1080;round(c,x-4,16,120,72,6,'#2c4b55');round(c,x,20,112,62,5,'#cfcca9');round(c,x+5,25,102,51,2,night?'#2d4a60':'#9fd0d6');round(c,x+5,25,102,night?26:22,2,night?'#25405a':'#bfe2e4');c.save();c.beginPath();c.roundRect(x+5,25,102,51,2);c.clip();c.fillStyle=night?'#1d3448':'#7aa4ae';for(let i=0;i<6;i++){const bw=12+((i*37)%11),bh=10+((i*53)%20);c.fillRect(x+7+i*17,76-bh,bw,bh);}if(night){c.fillStyle='#f1d08e';for(let i=0;i<14;i++)c.fillRect(x+10+((i*29)%94),62+((i*17)%12),2,2)}else{ellipse(c,x+78,38,9,9,'#f3e6bd');c.globalAlpha=.5;ellipse(c,x+30,36,14,5,'#e9f2ee');ellipse(c,x+44,33,10,4,'#e9f2ee');c.globalAlpha=1}c.restore();c.globalAlpha=.25;c.fillStyle='#ffffff';c.beginPath();c.moveTo(x+12,76);c.lineTo(x+40,25);c.lineTo(x+56,25);c.lineTo(x+28,76);c.fill();c.globalAlpha=1;line(c,[[x+56,25],[x+56,76]],'#e6e0be',3);line(c,[[x+6,50],[x+106,50]],'#e6e0be',2.5);round(c,x-6,82,124,7,3,'#b8b591');round(c,x-6,82,124,3,2,'#d8d4b0');}round(c,412,14,136,94,6,'#223f4c');round(c,425,33,110,72,2,'#9eb4b4');line(c,[[480,34],[480,105]],'#4f6e7c',3);round(c,461,17,38,13,2,'#17333e');text(c,'0'+f,480,28,11,'#f3d490');
