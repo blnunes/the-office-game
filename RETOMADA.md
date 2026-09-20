@@ -59,6 +59,18 @@ Pedido do utilizador: os bonecos ficavam de pé encostados às secretárias em v
   - Efeito ainda é global (todos os 7 andares), não só o andar 1 — por conferir com mais calma nas mesas em fila do andar 2 e nas mesas executivas dos andares 4-5.
 - Lembrete: subir a versão do `?v=` em `index.html`/`tests/visual.html` sempre que se altera `.js` (feito: `v=20260920d`), senão o navegador mostra a versão em cache.
 
+## Animação de ambiente (20/09, sessão Claude Code)
+
+Pedido do utilizador: o jogo parecia "completamente estático" — pediu para reformular sprites da mobília e trazer referências reais de jogos do género (pesquisei via WebSearch: marketplaces itch.io/Etsy de pixel art de escritório e tutoriais de animação idle estilo Stardew Valley — sem tutorial com specs exatas, mas confirmou convenções já conhecidas: balcão elevado, sineta/nameplate no tampo, atendente atrás).
+
+**Descoberta importante, antes de animar mais nada:** `furniture()` verifica logo à cabeça `root.OFFICE_ART?.draw(c,type,x,y,w,h)` — se a imagem `assets/office-props.png` carregou (sempre, num navegador a sério), esse tipo usa a imagem e o resto da função nem corre. Isto cobre `desk`, `coffee`, `board` e `plant`. Ou seja: a maioria das secretárias do jogo (todas as `Estação de desenvolvimento` do andar 2, por exemplo) é uma imagem estática — animar código meu aí seria código morto, invisível no navegador. Só `reception`, `sofa`, `rack`, `garden`, `executive`, `console` e a mesa redonda genérica usam o meu desenho e podem ser animadas.
+
+- **Pose sentada com movimento:** `spriteSeated()` já não é uma pose congelada — respiração lenta (`bob`) e um pequeno gesto de digitação nos braços (`armL`/`armR`, fases opostas), com semente de fase por posição (`seed=(x*7+y*3)%10`) para pessoas diferentes não animarem em sincronia. Usa `now()` (novo helper, `performance.now()`, não o relógio do jogo) para ser suave a qualquer velocidade de jogo.
+- **Relógio de parede funcional:** `background()` desenha um relógio (ponteiros de hora/minuto) na parede de todos os andares, movido pela hora real do jogo (`time`) — não decorativo, mostra a hora a sério.
+- **Luzes dos servidores (andar 3):** cada unidade do `rack` pisca com fase própria (`Math.sin(now()*2.4+i*1.9+x*.02)`), em vez de pontos verdes estáticos.
+- **Balcão de receção:** ganhou uma sineta de atendimento com um brilho lento, e o monitor da Lia tem um leve pulsar de cor (sugere ecrã ligado, não uma imagem morta).
+- **Por fazer, se quiseres ir mais longe:** a única forma de animar as secretárias/café/quadro/plantas "a sério" é ou (a) parar de usar `office-props.png` para esses tipos e redesenhar tudo em procedural (como fiz para a receção — mais trabalho, mas dá controlo total), ou (b) aceitar que esses ficam estáticos e só o boneco + ambiente à volta se mexem. Vale a pena perguntares ao utilizador qual prefere antes de avançar mais nesta frente.
+
 ## Próximas melhorias (prioridade do Codex, ainda abertas)
 
 - Observar no navegador: NPC com `!` a aproximar-se, dois NPCs no café, grupo grande no andar executivo.
