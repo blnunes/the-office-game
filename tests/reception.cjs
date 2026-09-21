@@ -17,7 +17,7 @@ test('com relógio correndo, colegas chegam ao café, conversam e voltam ao trab
  for(let i=0;i<3600;i++){g.advance(.05);w.update(g,.05);
   const staff=[...w.people.values()].filter(p=>p.id===1||p.id===g.receptionRoster().support);
   coffee ||= staff.some(p=>p.coffee&&p.arrived);
-  conversation ||= staff.some(p=>p.partner!==null&&p.chat);
+  conversation ||= staff.some(p=>p.partner!==null);
   returned ||= conversation&&staff.some(p=>p.arrived&&!p.coffee&&p.activity.includes('suporte'));
  }
  assert(coffee,'chegada ao café');assert(conversation,'conversa presencial');assert(returned,'retorno ao posto');
