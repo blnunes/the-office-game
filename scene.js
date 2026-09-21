@@ -228,7 +228,7 @@ function receptionDesk(c,o){
  c.globalAlpha=.25;c.fillStyle='#22383f';for(let i=1;i<5;i++)c.fillRect(x+i*w/5,front+4,1.5,18);c.globalAlpha=1;
  round(c,x+14,front+10,w-28,13,3,'#20333f');text(c,'NIMBUS · RECEPÇÃO',x+w/2,front+20,11,'#f2e3bb');
  // Posto de trabalho da recepcionista, do lado de dentro do balcão.
- monitorBack(c,x+40,y+30,34);keyboard(c,x+40,y+33,30);mouse(c,x+62,y+37,8);
+ monitorBack(c,x+40,y+30,34);keyboard(c,x+40,y+9,30);mouse(c,x+62,y+13,8);
  papers(c,x+84,y+8,15);mug(c,x+112,y+26,'#cf9f87');
  // Placa de visitantes, sineta de atendimento e terminal de crachás sobre o tampo.
  round(c,x+w-96,y+6,30,17,3,'#3a4a58');round(c,x+w-93,y+8,24,11,2,'#53636e');text(c,'VISITAS',x+w-81,y+17,7,'#e3dcc4');
