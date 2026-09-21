@@ -310,3 +310,13 @@ Print do utilizador: mesmo já sentada junto ao monitor, a Lia aparecia de frent
 - **Corrigido:** `chairSpot()` para `reception` passou de `y-7` (atrás/acima do balcão inteiro) para `y+h-3` (à frente do monitor, do lado de quem o vê brilhar, quase entrando na faixa do balcão de visitantes mas sem tocar no texto "NIMBUS · RECEPÇÃO"). `p.facing` da Lia deixou de ter caso especial — agora usa `'up'` como todo o resto do elenco sentado, back to the player.
 - **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas. ZIP recriado.
 - **Verificado no navegador:** Lia aparece de costas, de frente pro monitor, no mesmo padrão visual de Operações/Suporte de plantão.
+
+## Melhor ainda: recepcionista de frente pra porta, monitor de costas pro visitante (21/09/2026, mesma sessão)
+
+O utilizador reconsiderou o ponto acima, com razão: virar a Lia de costas pra resolver o alinhamento com o monitor criou um problema pior — recepcionista de costas pra entrada não faz sentido nenhum. A sugestão dele: um sprite de monitor visto por trás, para ela poder ficar de frente pra quem chega (como um balcão de receção de verdade, onde o visitante vê a traseira do monitor, não o ecrã).
+
+- **Nova função `monitorBack(c,cx,baseY,w)` (`scene.js`):** mesma base, haste e moldura do `monitor()` normal (silhueta idêntica, mesmo tamanho), mas em vez do ecrã aceso desenha um painel traseiro fosco, uma nervura central e um cabo a sair por trás — sem brilho, sem `screenLines`.
+- **`receptionDesk()`:** o posto da Lia passou a chamar `monitorBack` em vez de `monitor`.
+- **Revertido o resto da correção anterior:** `chairSpot('reception')` voltou a `y-7` (atrás do monitor, não à frente) e `p.facing` da Lia voltou ao caso especial `id===0?'down':'up'` — ela fica de frente para quem entra (mesma direção de antes de toda esta sequência de correções), só que agora com o monitor certo (traseira) do lado de fora, em vez do ecrã aceso virado para o visitante.
+- **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas. ZIP recriado.
+- **Verificado no navegador:** Lia de frente para a entrada, monitor com a traseira visível (sem ecrã aceso) do lado de fora do balcão.
