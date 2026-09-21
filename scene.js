@@ -129,7 +129,7 @@ function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)+amt,g=(n
 // Relógio de parede real (segundos), para animações de ambiente que não dependem do relógio do jogo (que só avança a cada minuto).
 function now(){return(typeof performance!=='undefined'?performance.now():Date.now())/1000}
 // Ponto exato da cadeira por objeto: usado tanto para desenhar a cadeira como para posicionar quem está sentado nela — nunca dessincronizados.
-function chairSpot(o,from){const{x,y,w,h,type}=o;const nearest=list=>!from?list[0]:list.reduce((a,b)=>Math.hypot(b.x-from.x,b.y-from.y)<Math.hypot(a.x-from.x,a.y-from.y)?b:a);if(type==='reception')return{x:x+128,y:y-7};if(['desk','executive','console'].includes(type))return{x:x+w*.5,y:y+h+18};if(type==='cafetable')return nearest(chairSeats(o));if(type==='armchair')return{x:x+w/2,y:y+h/2+5};if(type==='sofa')return nearest([{x:x+w*.27,y:y+h*.66},{x:x+w*.73,y:y+h*.66}]);return null}
+function chairSpot(o,from){const{x,y,w,h,type}=o;const nearest=list=>!from?list[0]:list.reduce((a,b)=>Math.hypot(b.x-from.x,b.y-from.y)<Math.hypot(a.x-from.x,a.y-from.y)?b:a);if(type==='reception')return{x:x+40,y:y-7};if(['desk','executive','console'].includes(type))return{x:x+w*.5,y:y+h+18};if(type==='cafetable')return nearest(chairSeats(o));if(type==='armchair')return{x:x+w/2,y:y+h/2+5};if(type==='sofa')return nearest([{x:x+w*.27,y:y+h*.66},{x:x+w*.73,y:y+h*.66}]);return null}
 // Chão em pranchas: tons alternados + juntas em pixel duro (sem gradiente/blur), no espírito de um RPG 2D top-down.
 function floor(c,l){const base=l.theme,light=shade(base,20),seam=shade(base,-38),dark=shade(base,-20),tile=40;round(c,0,108,960,492,0,base);
  for(let y=108,ry=0;y<600;y+=tile,ry++){for(let x=0,rx=0;x<960;x+=tile,rx++){if((rx+ry)%2)c.fillStyle=light,c.fillRect(x,y,tile,tile);}}
@@ -334,9 +334,23 @@ function cafeChair(c,cx,cy,ax,ay,color='#8a6f52'){
 // Peças de mobília por tipo. Cada entrada desenha só a peça: a sombra, a cadeira e a
 // legenda são responsabilidade de furniture(), para não se repetirem em cada ramo.
 const SOFA=(c,o)=>upholstery(c,o.x,o.y,o.w,o.h,14,Math.max(2,Math.round(o.w/95)));
-function coffeeMachine(c,o){const{x,y,w,h}=o;
- round(c,x,y,w,h,5,'#bd9b6a');round(c,x+10,y+5,38,h-10,4,'#3a5061');round(c,x+16,y+10,25,12,2,'#90b4b7');
- round(c,x+22,y+h-21,12,10,3,'#f5e3bb');for(let i=0;i<3;i++)ellipse(c,x+65+i*15,y+24,5,6,'#f3dec1');
+function coffeeMachine(c,o){const{x,y,w,h}=o,bw=Math.min(48,w*.44);
+ // Cabinet base, then the machine body on top of it (same two-tone split the printer uses).
+ round(c,x,y+h*.62,w,h*.38,4,'#8a6a45');round(c,x+3,y+h*.66,w-6,h*.1,2,shade('#8a6a45',-14));
+ round(c,x+4,y+4,bw,h*.6,5,'#bd9b6a');round(c,x+9,y+9,bw-14,h*.34,4,'#31485a');round(c,x+13,y+13,bw-22,h*.16,2,'#8fc2c4');
+ // Status light, blinking like the printer/rack so the machine reads as "on".
+ ellipse(c,x+bw-11,y+12,2,2,Math.sin(now()*1.8)>0?'#8fd3b0':'#3e5350');
+ // Portafilter group + drip tray, front and centre.
+ round(c,x+bw*.32,y+h*.52,bw*.36,h*.16,2,'#4b3a2a');
+ round(c,x+2,y+h-16,bw+4,10,2,'#e7ddc4');round(c,x+5,y+h-14,bw-2,4,1,'#c9bb98');
+ // Two to-go cups waiting beside the machine, with lids, instead of plain blobs.
+ const cupY=y+h*.42,cupW=Math.max(9,w*.13),cupH=Math.max(14,h*.28);
+ for(let i=0;i<2;i++){const cx=x+bw+8+i*(cupW+7);
+  round(c,cx,cupY,cupW,cupH,2,'#f5e3bb');round(c,cx-1,cupY-3,cupW+2,5,1.5,'#e2c98f');
+  ellipse(c,cx+cupW/2,cupY-2,1.6,1.4,'#8a6a45');
+ }
+ // A faint steam wisp over the group head, fading in and out.
+ c.globalAlpha=.3+Math.sin(now()*1.3)*.2;line(c,[[x+bw*.5,y-1],[x+bw*.44,y-h*.16],[x+bw*.56,y-h*.28]],'#ffffff',1.6);c.globalAlpha=1;
 }
 function rackUnit(c,o){const{x,y,w,h}=o;
  round(c,x,y,w,h,5,'#344957');

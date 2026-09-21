@@ -292,3 +292,12 @@ O utilizador continuava sem conseguir passar perto dos murais mesmo depois das c
   - Jogador parado no elevador o dia inteiro (mais realista): 1 preso → **0 presos**.
 - **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas. ZIP recriado.
 - **Verificado no navegador:** andar 2 com o layout novo — corredor de cima livre, café no canto, os 4 murais embaixo com gente sentada/observando por perto, nada bloqueando a passagem.
+
+## Cafeteira mais detalhada; monitor da recepção do lado certo (21/09/2026, mesma sessão)
+
+Dois pedidos do utilizador: melhorar um pouco mais o desenho da cafeteira (comparando com o nível de acabamento que impressora/computadores já tinham); e a Lia (recepcionista) sentava numa posição do balcão sem o monitor à frente — o monitor ficava do lado de quem chega, não do lado dela, "parece que o monitor é pro visitante".
+
+- **`coffeeMachine(c,o)` (`scene.js`):** ganhou base/gabinete em dois tons (como a impressora), luz de status a piscar (`now()`, mesmo truque do rack/impressora), grupo de café + bandeja de respingo, dois copos de vai-e-vem com tampa (em vez de três elipses soltas) e um fiapo de vapor com opacidade a variar. Tudo em proporção a `w`/`h`, não pixels fixos — confirmado que funciona tanto na versão grande do andar 1 (110×110) quanto na pequena do andar 2 (48×50, `propSizes2`).
+- **`chairSpot()` para `reception` (`scene.js`):** o posto de trabalho da recepcionista (monitor/teclado, desenhados em `receptionDesk()`) fica centrado em `x+40` do balcão — mas a cadeira era desenhada (e a Lia renderizada "sentada") em `x+128`, quase 90px à direita, na zona vazia entre o posto de trabalho e a placa "VISITAS"/sineta (do lado de quem chega). Corrigido para `x+40`, alinhado com o monitor. Como `chairSpot()` já é a fonte única usada tanto para desenhar a cadeira quanto para posicionar o boneco sentado (ver sessão de 20/09), a correção resolve os dois de uma vez, sem precisar de outro ajuste em `app.js`.
+- **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas. ZIP recriado.
+- **Verificado no navegador:** Lia aparece sentada bem em frente ao monitor dela agora (antes ficava perto da placa de visitantes, do outro lado do balcão); cafeteira nova conferida nos andares 1 e 2, nas duas escalas.
