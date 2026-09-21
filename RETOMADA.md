@@ -280,3 +280,15 @@ Pedido repetido do utilizador (várias vezes, com prints) — eu tinha ficado s�
 - **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas (nada testava qual caminho de desenho era usado). ZIP recriado.
 - **Verificado no navegador:** andar 1 (Mural da empresa + Café & conversa) e andar 2 (os 4 quadros de departamento + café) — visualmente consistentes com o resto da mobília agora, sem a mistura de estilos.
 - **Não mexido:** `plant` continua a vir da imagem (não foi pedido; mesma lógica de risco de "ainda não vi confirmado no navegador" se eu mudasse sem pedido).
+
+## Andar 2: murais para baixo, café para o canto — resolve o engarrafamento pela raiz (21/09/2026, mesma sessão)
+
+O utilizador continuava sem conseguir passar perto dos murais mesmo depois das correções de código em `unstick()`/`World.update` (sessão anterior, mesmo dia) — e sugeriu ele mesmo a solução: descer os murais ou movê-los para a parte de baixo da sala, e levar o café para um canto de cima. Implementado exatamente assim, em vez de continuar só a mexer no algoritmo de desvio.
+
+- **`data.js`, andar 2:** os 4 murais (`Quadro da sprint/vagas/campanhas/ponto`) saíram de `y=125` (colados à parede de cima, bem no único corredor entre o elevador e o resto do andar) para `y=460` (parte de baixo, junto da própria repartição). Café + mesinha saíram do meio do corredor de baixo (`x=400-505,y=470`, entre os murais) para o canto livre em cima à direita (`x=740-840,y=125-130`), fora da rota principal. A planta que ficava ao lado do 4º mural (`x=715,y=175`) foi junto para `x=680,y=460`, perto do seu mural de novo; as outras duas plantas ficaram onde estavam. Os 4 postos "olhando para o mural" em `seats` moveram de `y=200` para `y=530` (na frente do mural, na posição nova).
+- **Por que resolve pela raiz, não só sintoma:** o corredor entre o elevador (ponto de chegada de todo mundo) e o resto do andar ficava, antes, dividido pelos 4 murais — qualquer pessoa parada ali (o jogador incluído, ver sessão anterior) virava tampão num gargalo já apertado. Com os murais fora dali, o corredor de cima fica livre de ponta a ponta (testado: nenhum bloqueio de `x=40` a `x=720` nas alturas `y=140`/`y=160`, só a área do café — um canto pequeno, fora do caminho principal — continua ocupada).
+- **Medido com o mesmo script de reprodução da sessão anterior:**
+  - Rajada de chegadas simultâneas (pior caso): 3 presos → **1 preso**.
+  - Jogador parado no elevador o dia inteiro (mais realista): 1 preso → **0 presos**.
+- **Testes:** `node --test tests/*.cjs` — 50 aprovados, 0 falhas. ZIP recriado.
+- **Verificado no navegador:** andar 2 com o layout novo — corredor de cima livre, café no canto, os 4 murais embaixo com gente sentada/observando por perto, nada bloqueando a passagem.

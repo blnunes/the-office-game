@@ -59,14 +59,19 @@ const layouts=[
  // Quatro repartições lado a lado (não só desenvolvimento): cada uma com mesas e mural próprios, separadas por divisórias baixas em background().
  // Mesas/mural/café menores que o padrão do prédio (ver propSizes2) — com 14 pessoas neste andar, corredores largos importam mais que móveis grandes.
  {name:'Desenvolvimento & operações',theme:'#c5d3cc',feature:'Squads, RH, marketing e pessoal no mesmo andar',objects:[
-  ['desk',50,225,72,64,'Estação de desenvolvimento'],['desk',190,225,72,64,'Estação de desenvolvimento'],['desk',50,360,72,64,'Estação de desenvolvimento'],['desk',190,360,72,64,'Estação de desenvolvimento'],['board',45,125,64,56,'Quadro da sprint'],
-  ['desk',390,225,72,64,'Recursos Humanos'],['desk',390,360,72,64,'Recursos Humanos'],['board',345,125,64,56,'Quadro de vagas'],
-  ['desk',590,225,72,64,'Marketing & Comunicação'],['desk',590,360,72,64,'Marketing & Comunicação'],['board',550,125,64,56,'Mural de campanhas'],
-  ['desk',800,225,72,64,'Departamento pessoal'],['desk',800,360,72,64,'Departamento pessoal'],['board',755,125,64,56,'Quadro de ponto'],
-  // Copa central: café + mesinha, no corredor de baixo, à mesma distância das quatro repartições — não escondida num canto de uma delas.
-  ['coffee',400,480,48,50,'Café'],['cafetable',505,470,64,64,'Mesa do café'],
-  ['plant',305,175,32,35,'Planta'],['plant',510,175,32,35,'Planta'],['plant',715,175,32,35,'Planta']
- ],seats:[[86,307],[226,307],[426,307],[626,307],[836,307],[86,442],[226,442],[77,200],[426,442],[377,200],[626,442],[582,200],[836,442],[787,200]]},
+  ['desk',50,225,72,64,'Estação de desenvolvimento'],['desk',190,225,72,64,'Estação de desenvolvimento'],['desk',50,360,72,64,'Estação de desenvolvimento'],['desk',190,360,72,64,'Estação de desenvolvimento'],
+  ['desk',390,225,72,64,'Recursos Humanos'],['desk',390,360,72,64,'Recursos Humanos'],
+  ['desk',590,225,72,64,'Marketing & Comunicação'],['desk',590,360,72,64,'Marketing & Comunicação'],
+  ['desk',800,225,72,64,'Departamento pessoal'],['desk',800,360,72,64,'Departamento pessoal'],
+  // Os 4 murais ficavam colados à parede de cima, bem no único corredor entre o elevador e o resto do
+  // andar — qualquer pessoa parada ali (jogador incluído) virava um tampão no gargalo. Movidos para a
+  // faixa de baixo, junto da própria repartição, deixando o corredor de cima livre de ponta a ponta.
+  ['board',45,460,64,56,'Quadro da sprint'],['board',345,460,64,56,'Quadro de vagas'],['board',550,460,64,56,'Mural de campanhas'],['board',755,460,64,56,'Quadro de ponto'],
+  // Café + mesinha saem do meio do corredor de baixo (entre os murais) e vão para o canto livre em
+  // cima à direita — fora da rota principal de quem chega pelo elevador.
+  ['coffee',840,125,48,50,'Café'],['cafetable',740,130,64,64,'Mesa do café'],
+  ['plant',305,175,32,35,'Planta'],['plant',510,175,32,35,'Planta'],['plant',680,460,32,35,'Planta']
+ ],seats:[[86,307],[226,307],[426,307],[626,307],[836,307],[86,442],[226,442],[77,530],[426,442],[377,530],[626,442],[582,530],[836,442],[787,530]]},
  {name:'Plataforma & observabilidade',theme:'#b4c9d4',feature:'Serviços que não dormem',objects:[['rack',85,190,60,120,'Servidores'],['rack',170,190,60,120,'Servidores'],['rack',255,190,60,120,'Servidores'],['console',570,205,300,70,'Central de incidentes'],['desk',610,370,130,55,'Confiabilidade'],['board',90,415,230,32,'Mapa de serviços'],['coffee',800,445,80,45,'Café']],seats:[[670,185],[665,345],[100,350],[210,350],[300,350],[390,210],[810,330],[870,385],[340,480],[520,480],[660,480],[780,525]]},
  {name:'Liderança & planejamento',theme:'#d3c8b8',feature:'Decidir juntos',objects:[['meeting',100,220,270,105,'Reunião de equipe'],['board',610,170,240,38,'Planejamento'],['desk',650,280,165,62,'Coordenação'],['sofa',120,420,200,50,'Mentoria'],['coffee',760,440,110,50,'Café']],seats:[[690,260],[190,198],[110,360],[280,360],[370,350],[580,340],[855,290],[635,440],[320,505],[740,525]]},
  {name:'Diretoria & decisões',theme:'#d6cbbb',feature:'Prioridades com consequências',objects:[['executive',95,240,250,76,'Direção de engenharia'],['executive',625,240,240,76,'Direção de plataforma'],['meeting',350,390,260,90,'Comitê técnico'],['board',75,140,220,35,'Portfólio'],['coffee',795,440,90,45,'Café']],seats:[[225,215],[750,215],[130,365],[310,350],[650,350],[810,360],[295,465],[675,460]]},
