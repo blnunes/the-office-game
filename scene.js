@@ -381,8 +381,9 @@ function pieceLabel(c,o,f){
  text(c,o.label,cx,ly,11,'#2f4a4d');
 }
 function furniture(c,o,f){const{x,y,w,h,type}=o;
- // Café, mural e plantas continuam a vir de office-props.png quando a imagem já carregou.
- if(['coffee','board','plant'].includes(type)&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){pieceLabel(c,o,f);return}
+ // Plantas continuam a vir de office-props.png quando a imagem já carregou; café e mural já têm
+ // desenho procedural próprio (coffeeMachine/boardUnit, mesma família visual da mesa/executivo).
+ if(['plant'].includes(type)&&root.OFFICE_ART?.draw(c,type,x,y,w,h)){pieceLabel(c,o,f);return}
  if(COM_SOMBRA.has(type))round(c,x+5,y+9,w,h,8,'#223c3d20');
  (PIECES[type]||roundTable)(c,o);
  if(COM_CADEIRA.has(type)){const cs=chairSpot(o);officeChair(c,cs.x,cs.y)}
